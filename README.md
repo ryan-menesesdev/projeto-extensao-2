@@ -39,7 +39,7 @@ O sistema opera com base em três perfis de usuário distintos, cada um com perm
 ## Modelo do Banco de Dados 🎲
 A estrutura do banco de dados foi modelada para suportar as funcionalidades descritas, separando as responsabilidades em entidades claras e com relacionamentos bem definidos. O diagrama abaixo, gerado com PlantUML, representa a arquitetura do banco.
 
-![Diagrama do Banco de Dados](https://res.cloudinary.com/dglufibdf/image/upload/v1758398385/diagrama-plant-uml_wmpihw.png)
+![Diagrama do Banco de Dados](https://res.cloudinary.com/dglufibdf/image/upload/v1758488662/diagrama-plant-uml_wmpihw.png)
 
 ### Principais Entidades 👾
 * **usuario:** Armazena os dados dos clientes, funcionários e supervisores, controlando os perfis de acesso.
