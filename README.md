@@ -1,9 +1,7 @@
 # Projeto: Sinhá Bolos e Lanches 🍰🥪
 
 ## Equipe
-* **ANA JULIA SESSO RAMALHO**
 * **IGOR DIAS MODESTO**
-* **MILENA SOUZA BORGES SILVA**
 * **RYAN DAVI OLIVEIRA DE MENESES**
 
 ## Descrição Geral 📚
