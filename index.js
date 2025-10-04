@@ -10,6 +10,10 @@ app.set('views', './app/views');
 app.use(express.urlencoded({ extended: true }));
 
 routes.listProducts(app);
+routes.getProductById(app);
+routes.listCart(app);
+routes.listOrders(app);
+routes.getOrderById(app);
 routes.error(app);
 
 app.listen(port, () => {
