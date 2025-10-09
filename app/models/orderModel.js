@@ -1,4 +1,5 @@
 module.exports = {
+  
     getOrdersByUserId: (db, userId, status, callback) => {
         let sql = `
             SELECT
@@ -23,6 +24,7 @@ module.exports = {
 
         db.query(sql, params, callback);
     },
+
     getOrderById: (db, orderId, userId, callback) => {
         const sql = `
             SELECT
@@ -65,5 +67,79 @@ module.exports = {
                 callback(null, finalResult);
             });
         });
+    },
+
+    // ---
+    getAllOrders: (db, status, callback) => {
+        let sql = `
+            SELECT 
+                p.id, 
+                p.statusPedido,
+                p.criadoEm,
+                u.nome AS nomeCliente,
+                pg.metodoPagamento,
+                pg.statusPagamento
+            FROM pedido AS p
+            JOIN usuario AS u ON p.idUsuario = u.id
+            JOIN pagamento AS pg ON p.idPagamento = pg.id
+        `;
+        
+        const params = [];
+
+        if (status) {
+            sql += ' WHERE p.statusPedido = ?';
+            params.push(status);
+        }
+
+        sql += ' ORDER BY p.criadoEm DESC';
+        
+        db.query(sql, params, callback);
+    },
+
+    getAdminOrderById: (db, orderId, callback) => {
+        const detailsSql = `
+            SELECT 
+                p.id, 
+                p.statusPedido,
+                p.criadoEm,
+                u.nome AS nomeCliente,
+                u.email AS emailCliente,
+                u.telefone AS telefoneCliente,
+                pg.metodoPagamento,
+                pg.statusPagamento
+            FROM pedido AS p
+            JOIN usuario AS u ON p.idUsuario = u.id
+            JOIN pagamento AS pg ON p.idPagamento = pg.id
+            WHERE p.id = ?
+        `;
+
+        db.query(detailsSql, [orderId], (error, detailsResult) => {
+            if (error || detailsResult.length === 0) {
+                return callback(error, null);
+            }
+
+            const productsSql = `
+                SELECT
+                    pr.nome,
+                    pr.preco,
+                    pp.quantidade
+                FROM produto_pedido AS pp
+                JOIN produto AS pr ON pp.idProduto = pr.id
+                WHERE pp.idPedido = ?
+            `;
+
+            db.query(productsSql, [orderId], (error, productsResult) => {
+                if (error) {
+                    return callback(error, null);
+                }
+
+                const finalResult = {
+                    details: detailsResult[0],
+                    products: productsResult
+                };
+
+                callback(null, finalResult);
+            });
+        });
     }
-}
+};

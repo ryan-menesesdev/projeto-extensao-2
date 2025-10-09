@@ -47,4 +47,47 @@ module.exports = {
             res.status(200).json({ order: result });
         });
     },
+
+    showAllAdminOrders: (req, res) => {
+        // verificação
+        if (!req.user || (req.user.role !== 'funcionario' && req.user.role !== 'supervisor')) {
+            return res.status(403).send('<h1>Acesso Negado</h1><p>Você não tem permissão para ver esta página.</p>');
+        }
+        // --- FIM DA VERIFICAÇÃO ---
+
+        const { status } = req.query;
+        const db = dbConn();
+        const { getAllOrders } = require("../models/orderModel");
+        getAllOrders(db, status, (error, orders) => {
+            db.end();
+            if (error) {
+                console.error("Erro no CONTROLLER (admin) ao listar pedidos:", error);
+                return res.status(500).render('error');
+            }
+            res.render('admin/orders-list', { orders: orders });
+        });
+    },
+
+    showAdminOrderDetails: (req, res) => {
+        // verificcao
+        if (!req.user || (req.user.role !== 'funcionario' && req.user.role !== 'supervisor')) {
+            return res.status(403).send('<h1>Acesso Negado</h1><p>Você não tem permissão para ver esta página.</p>');
+        }
+       
+        
+        const { id } = req.params;
+        const db = dbConn();
+        const { getAdminOrderById } = require("../models/orderModel");
+        getAdminOrderById(db, id, (error, order) => {
+            db.end();
+            if (error) {
+                console.error("Erro no CONTROLLER (admin) ao buscar pedido por ID:", error);
+                return res.status(500).render('error');
+            }
+            if (!order) {
+                return res.status(404).render('error');
+            }
+            res.render('admin/order-details', { order: order });
+        });
+    }
 }
