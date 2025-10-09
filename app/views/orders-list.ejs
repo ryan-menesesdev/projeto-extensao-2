@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Pedidos</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        a { text-decoration: none; color: #007bff; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <h1>Painel de Admin - Lista de Pedidos</h1>
+
+    <% if (typeof orders !== 'undefined' && orders.length > 0) { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID do Pedido</th>
+                    <th>Nome do Cliente</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% orders.forEach(order => { %>
+                    <tr>
+                        <td>#<%= order.id %></td>
+                        <td><%= order.nomeCliente %></td>
+                        <td><%= order.statusPedido %></td>
+                        <%# Formata a data para o padrão brasileiro %>
+                        <td><%= new Date(order.criadoEm).toLocaleDateString('pt-BR') %></td>
+                        <td>
+                            <a href="/admin/orders/<%= order.id %>">Ver Detalhes</a>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p>Nenhum pedido encontrado.</p>
+    <% } %>
+
+</body>
+</html>

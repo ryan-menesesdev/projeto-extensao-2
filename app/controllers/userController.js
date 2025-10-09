@@ -17,7 +17,7 @@ module.exports = {
                 console.error("Erro no CONTROLLER ao listar usuários:", error);
                 return res.status(500).render('error');
             }
-            res.render('admin/users-list', { users: users });
+            res.render('listaUser', { users: users });
         });
     },
 
@@ -40,7 +40,7 @@ module.exports = {
             if (!user) {
                 return res.status(404).render('error');
             }
-            res.render('admin/user-details', { user: user });
+            res.render('user-details', { user: user });
         });
     }
 };

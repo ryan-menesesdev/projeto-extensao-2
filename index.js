@@ -9,14 +9,33 @@ app.set('views', './app/views');
 
 app.use(express.urlencoded({ extended: true }));
 
+// Middleware para simular autenticação de usuário
+app.use((req, res, next) => {
+  // Simula um login de SUPERVISOR (Pode ver tudo)
+  req.user = { id: 6, nome: 'Thiago Supervisor Teste', role: 'supervisor' };
+
+  // Para testar como FUNCIONÁRIO, comente a linha de cima e descomente a de baixo
+  // req.user = { id: 3, nome: 'Camila Funcionária Teste', role: 'funcionario' };
+  
+  next(); 
+});
+
+
+
 routes.listProducts(app);
 routes.getProductById(app);
 routes.listCart(app);
 routes.listOrders(app);
 routes.getOrderById(app);
+
+routes.adminListOrders(app);
+routes.adminGetOrderById(app);
+routes.adminListUsers(app);
+routes.adminGetUserById(app);
+
+// A rota de erro deve ser a última
 routes.error(app);
 
 app.listen(port, () => {
     console.log('Servidor rodando na porta: ' + port);
 });
-

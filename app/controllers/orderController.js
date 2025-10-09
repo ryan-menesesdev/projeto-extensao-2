@@ -64,7 +64,7 @@ module.exports = {
                 console.error("Erro no CONTROLLER (admin) ao listar pedidos:", error);
                 return res.status(500).render('error');
             }
-            res.render('admin/orders-list', { orders: orders });
+            res.render('orders-list', { orders: orders });
         });
     },
 
@@ -87,7 +87,7 @@ module.exports = {
             if (!order) {
                 return res.status(404).render('error');
             }
-            res.render('admin/order-details', { order: order });
+            res.render('order-details', { order: order });
         });
     }
 }
