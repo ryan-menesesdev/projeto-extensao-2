@@ -3,7 +3,7 @@ const { getProductById } = require('../models/productModel');
 const dbConn = require('../../config/dbConnection');
 
 module.exports = {
-    listProducts: async (app, req, res) => {
+    listProducts: async (req, res) => {
         console.log('CONTROLLER de PRODUTOS');
 
         const { categoria } = req.query;

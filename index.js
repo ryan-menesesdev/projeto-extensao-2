@@ -25,13 +25,10 @@ routes.getProductById(app);
 routes.listCart(app);
 routes.listOrders(app);
 routes.getOrderById(app);
-
 routes.adminListOrders(app);
 routes.adminGetOrderById(app);
 routes.adminListUsers(app);
 routes.adminGetUserById(app);
-
-// A rota de erro deve ser a última
 routes.error(app);
 
 app.listen(port, () => {
