@@ -14,8 +14,6 @@ app.use((req, res, next) => {
   // Simula um login de SUPERVISOR (Pode ver tudo)
   req.user = { id: 6, nome: 'Thiago Supervisor Teste', role: 'supervisor' };
 
-  // Para testar como FUNCIONÁRIO, comente a linha de cima e descomente a de baixo
-  // req.user = { id: 3, nome: 'Camila Funcionária Teste', role: 'funcionario' };
   
   next(); 
 });
