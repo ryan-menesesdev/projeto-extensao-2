@@ -9,17 +9,6 @@ app.set('views', './app/views');
 
 app.use(express.urlencoded({ extended: true }));
 
-// Middleware para simular autenticação de usuário
-app.use((req, res, next) => {
-  // Simula um login de SUPERVISOR (Pode ver tudo)
-  req.user = { id: 6, nome: 'Thiago Supervisor Teste', role: 'supervisor' };
-
-  
-  next(); 
-});
-
-
-
 routes.listProducts(app);
 routes.getProductById(app);
 routes.listCart(app);
