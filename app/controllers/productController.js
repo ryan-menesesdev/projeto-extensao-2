@@ -33,7 +33,7 @@ module.exports = {
             }
 
             if(!result.length) {
-                return res.status(400).json({ message: "Produto não encontrado." });
+                return res.status(404).json({ message: "Produto não encontrado." });
             }
 
             res.status(200).json({ product: result[0] });

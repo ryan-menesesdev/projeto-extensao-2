@@ -6,7 +6,7 @@ module.exports = {
         const { userId } = req.query;
 
         if(!userId) {
-            return res.status(400).json({ error: "Não existe nenhum Usuário vinculado a esse carrinho" });
+            return res.status(404).json({ error: "Não existe nenhum Usuário vinculado a esse carrinho" });
         }
 
         const db = dbConn();

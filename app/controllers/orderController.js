@@ -8,7 +8,7 @@ module.exports = {
         const { userId, status } = req.query;
 
         if (!userId) {
-            return res.status(400).json({ error: "Não foi encontrado usuário vinculado." });
+            return res.status(404).json({ error: "Não foi encontrado usuário vinculado." });
         }
 
         const db = dbConn();
@@ -29,7 +29,7 @@ module.exports = {
         const { userId } = req.query;
 
         if(!userId) {
-            return res.status(400).json({ error: "Nenhum usuário foi encontrado sobre esse pedido" });
+            return res.status(404).json({ error: "Nenhum usuário foi encontrado sobre esse pedido" });
         }
 
         const db = dbConn();
@@ -52,8 +52,8 @@ module.exports = {
 
     showAllAdminOrders: (req, res) => {
 
-        if (!req.user || (req.user.role === 'cliente')) {
-            return res.status(403).json({ error: 'Você não tem acesso a essa funcionalidade'});
+        if (!req.user || (req.user.role !== 'funcionario' && req.user.role !== 'supervisor')) {
+            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
         }
 
         const { status } = req.query;
@@ -73,8 +73,8 @@ module.exports = {
     },
 
     showAdminOrderDetails: (req, res) => {
-        if (!req.user || (req.user.role === 'cliente')) {
-            return res.status(403).json({ error: 'Você não tem acesso a essa funcionalidade'});
+        if (!req.user || (req.user.role !== 'funcionario' && req.user.role !== 'supervisor')) {
+            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
         }
        
         const { id } = req.params;

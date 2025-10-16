@@ -5,7 +5,7 @@ module.exports = {
     showAllUsers: (req, res) => {
        
         if (!req.user || req.user.role !== 'supervisor') {
-            return res.status(403).json({ error: 'Você não tem acesso a essa funcionalidade'});
+            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
         }
         
         const db = dbConn();
@@ -25,7 +25,7 @@ module.exports = {
     showUserDetails: (req, res) => {
         
         if (!req.user || req.user.role !== 'supervisor') {
-            return res.status(403).json({ error: 'Você não tem acesso a essa funcionalidade'});
+            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
         }
       
         const { id } = req.params;
