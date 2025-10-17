@@ -8,7 +8,7 @@ module.exports = {
         const { userId, status } = req.query;
 
         if (!userId) {
-            return res.status(404).json({ error: "Não foi encontrado usuário vinculado." });
+            return res.status(400).json({ error: "Não foi encontrado usuário vinculado." });
         }
 
         const db = dbConn();
@@ -29,7 +29,7 @@ module.exports = {
         const { userId } = req.query;
 
         if(!userId) {
-            return res.status(404).json({ error: "Nenhum usuário foi encontrado sobre esse pedido" });
+            return res.status(400).json({ error: "Nenhum usuário foi encontrado sobre esse pedido" });
         }
 
         const db = dbConn();
@@ -43,7 +43,7 @@ module.exports = {
             }
 
             if (!result.details) {
-                return res.status(404).json({ message: "Pedido não encontrado ou não pertence a este usuário." });
+                return res.status(400).json({ message: "Pedido não encontrado ou não pertence a este usuário." });
             }
             
             res.status(200).json({ order: result });
@@ -89,7 +89,7 @@ module.exports = {
             }
 
             if (!order) {
-                return res.status(404).json({ error: 'Pedido não encontrado.' });
+                return res.status(400).json({ error: 'Pedido não encontrado.' });
             }
 
             res.status(200).json({ order: order });

@@ -41,7 +41,7 @@ module.exports = {
             }
 
             if (!user) {
-                return res.status(404).json({ error: 'Usuário não encontrado.' });
+                return res.status(400).json({ error: 'Usuário não encontrado.' });
             }
             
             res.status(200).json({ user: user });
