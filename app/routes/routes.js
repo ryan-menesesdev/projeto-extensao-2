@@ -1,11 +1,17 @@
-const { getCart } = require('../controllers/cartController');
-const { listOrders, getOrderById } = require('../controllers/orderController');
-const { listProducts } = require('../controllers/productController');
-const { getProductById } = require('../controllers/productController');
-const { showAllAdminOrders } = require('../controllers/orderController');
-const { showAdminOrderDetails } = require('../controllers/orderController');
-const { showAllUsers } = require('../controllers/userController');
-const { showUserDetails } = require('../controllers/userController');
+const express = require('express');
+const router = express.Router();
+
+// Cart Controller
+const { getCart, addProductToCart, updateCartItemQuantity, removeCartItem, finalizeCheckout } = require('../controllers/cartController');
+
+// Order Controller
+const { listOrders, getOrderById, showAllAdminOrders, showAdminOrderDetails } = require('../controllers/orderController');
+
+// Product Controller
+const { listProducts, getProductById } = require('../controllers/productController');
+
+// User Controller
+const { showAllUsers, showUserDetails } = require('../controllers/userController');
 
 // Criar Header com key 'x-dev-role' e valor com 'funcionario' ou 'supervisor' para simular validação
 function devAuth(req, res, next) {
@@ -16,46 +22,51 @@ function devAuth(req, res, next) {
     next();
 }
 
-module.exports = {
-    listProducts: (app) => {
-        // REQUISIÇÃO -> /products ou /products?categoria=bolo
-        app.get('/products', listProducts);
-    },
-    getProductById: (app) => {
-        // REQUISIÇÃO -> /products/1
-        app.get('/products/:id', getProductById);
-    },
-    listCart: (app) => {
-        // REQUISIÇÃO -> /cart?userId=1
-        app.get('/cart', getCart);
-    },
-    listOrders: (app) => {
-        // REQUISIÇÃO -> /orders?userId=1 
-        app.get('/orders', listOrders);
-    },
-    getOrderById: (app) => {
-        // REQUISIÇÃO -> /orders/1?userId=1
-        app.get('/orders/:id', getOrderById);
-    },
-    adminListOrders: (app) => {
-        // REQUISIÇÃO -> /admin/orders ou /admin/orders?status=preparando
-        app.get('/admin/orders', devAuth, showAllAdminOrders);
-    },
-    adminGetOrderById: (app) => {
-        // REQUISIÇÃO -> /admin/orders/1
-        app.get('/admin/orders/:id', devAuth, showAdminOrderDetails);
-    },
-    adminListUsers: (app) => {
-        // REQUISIÇÃO -> /admin/users
-        app.get('/admin/users', devAuth, showAllUsers);
-    },
-    adminGetUserById: (app) => {
-        // REQUISIÇÃO -> /admin/users/1
-        app.get('/admin/users/:id', devAuth, showUserDetails);
-    },
-    error: (app) => {
-        app.use((req, res, next) => {
-            res.status(404).json( { error: 'Rota não encontrada' });
-        });
-    }
-}
+// CLIENTE
+
+// REQUISIÇÃO -> /products ou /products?categoria=bolo
+router.get('/products', listProducts);
+
+// REQUISIÇÃO -> /products/1
+router.get('/products/:id', getProductById);
+
+// REQUISIÇÃO -> /cart?userId=1
+router.get('/cart', getCart);
+
+// REQUISIÇÃO -> /orders?userId=1 
+router.get('/orders', listOrders);
+
+// REQUISIÇÃO -> /orders/1?userId=1
+router.get('/orders/:id', getOrderById);
+
+// REQUISIÇÃO -> /cart/add
+// Body: { "userId": 1, "productId": 3 }
+router.post('/cart/add', addProductToCart);
+
+// REQUISIÇÃO -> PUT /cart/products/1 
+// Body: { "userId": 1, "quantity": 3 }
+router.put('/cart/products/:productId', updateCartItemQuantity);
+
+// REQUISIÇÃO -> DELETE /cart/products/1 
+// Body: { "userId": 1 }
+router.delete('/cart/products/:productId', removeCartItem);
+
+// REQUISIÇÃO -> POST /payment
+// Body: { "userId": 1, "metodoPagamento": "pix" }
+router.post('/payment', finalizeCheckout);
+
+// ADMIN
+
+// REQUISIÇÃO -> /admin/orders ou /admin/orders?status=preparando
+router.get('/admin/orders', devAuth, showAllAdminOrders);
+
+// REQUISIÇÃO -> /admin/orders/1
+router.get('/admin/orders/:id', devAuth, showAdminOrderDetails);
+
+// REQUISIÇÃO -> /admin/users
+router.get('/admin/users', devAuth, showAllUsers);
+
+// REQUISIÇÃO -> /admin/users/1
+router.get('/admin/users/:id', devAuth, showUserDetails);
+
+module.exports = router;

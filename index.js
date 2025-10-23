@@ -1,5 +1,5 @@
 const express = require('express');
-const routes = require('./app/routes/routes');
+const router = require('./app/routes/routes');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -7,18 +7,14 @@ const port = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 app.set('views', './app/views');
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-routes.listProducts(app);
-routes.getProductById(app);
-routes.listCart(app);
-routes.listOrders(app);
-routes.getOrderById(app);
-routes.adminListOrders(app);
-routes.adminGetOrderById(app);
-routes.adminListUsers(app);
-routes.adminGetUserById(app);
-routes.error(app);
+app.use(router);
+
+app.use((req, res) => {
+    res.status(404).json( { error: 'Rota não encontrada' });
+});
 
 app.listen(port, () => {
     console.log('Servidor rodando na porta: ' + port);
