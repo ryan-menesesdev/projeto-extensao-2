@@ -69,7 +69,6 @@ module.exports = {
         });
     },
 
-    // ---
     getAllOrders: (db, status, callback) => {
         let sql = `
             SELECT 
@@ -141,5 +140,11 @@ module.exports = {
                 callback(null, finalResult);
             });
         });
+    },
+    alterOrderStatus: (db, id, status, callback) => {
+        const sql = 'UPDATE pedido SET statusPedido = ? WHERE id = ?'; 
+        const params = [status, id];
+        
+        db.query(sql, params, callback);
     }
 };

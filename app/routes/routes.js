@@ -5,10 +5,10 @@ const router = express.Router();
 const { getCart, addProductToCart, updateCartItemQuantity, removeCartItem, finalizeCheckout } = require('../controllers/cartController');
 
 // Order Controller
-const { listOrders, getOrderById, showAllAdminOrders, showAdminOrderDetails } = require('../controllers/orderController');
+const { listOrders, getOrderById, showAllAdminOrders, showAdminOrderDetails, alterOrderStatus } = require('../controllers/orderController');
 
 // Product Controller
-const { listProducts, getProductById } = require('../controllers/productController');
+const { listProducts, getProductById, alterProductAvailability } = require('../controllers/productController');
 
 // User Controller
 const { showAllUsers, showUserDetails } = require('../controllers/userController');
@@ -61,7 +61,16 @@ router.post('/payment', finalizeCheckout);
 router.get('/admin/orders', devAuth, showAllAdminOrders);
 
 // REQUISIÇÃO -> /admin/orders/1
+// Body: { "userId": 1, "metodoPagamento": "pix" }
 router.get('/admin/orders/:id', devAuth, showAdminOrderDetails);
+
+// REQUISIÇÃO -> /admin/orders/1
+// Body: { "statusPedido": "Preparando" }
+router.patch('/admin/orders/:id', devAuth, alterOrderStatus);
+
+// REQUISIÇÃO -> /admin/products/1
+// Body: { disponivel: false }
+router.patch('/admin/products/:id', devAuth, alterProductAvailability);
 
 // REQUISIÇÃO -> /admin/users
 router.get('/admin/users', devAuth, showAllUsers);

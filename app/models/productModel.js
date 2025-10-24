@@ -16,5 +16,11 @@ module.exports = {
     getProductById: (db, id, callback) => {
         const sql = 'SELECT * FROM produto WHERE id = ? AND disponivel = TRUE';
         db.query(sql, [id], callback);
+    },
+    alterProductAvailability: (db, disponivel, id, callback) => {
+        const sql = 'UPDATE produto SET disponivel = ? WHERE id = ?'; 
+        const params = [disponivel, id];
+        
+        db.query(sql, params, callback);
     }
 }

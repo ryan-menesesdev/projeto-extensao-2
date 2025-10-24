@@ -1,5 +1,5 @@
 const dbConn = require("../../config/dbConnection");
-const { getAdminOrderById } = require("../models/orderModel");
+const { getAdminOrderById, alterOrderStatus } = require("../models/orderModel");
 const { getAllOrders } = require("../models/orderModel");
 const { getOrdersByUserId, getOrderById } = require("../models/orderModel");
 
@@ -93,6 +93,34 @@ module.exports = {
             }
 
             res.status(200).json({ order: order });
+        });
+    },
+    alterOrderStatus: (req, res) => {
+        if (!req.user || (req.user.role !== 'funcionario' && req.user.role !== 'supervisor')) {
+            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
+        }
+
+        const { id } = req.params;
+        const { statusPedido } = req.body;
+
+        if (!statusPedido) {
+            return res.status(400).json({ error: 'O novo "status" é obrigatório no corpo da requisição.' });
+        }
+
+        const db = dbConn();
+
+        alterOrderStatus(db, id, statusPedido, (error, result) => {
+            db.end();
+            
+            if (error) {
+                return res.status(500).json({ error: 'Erro interno no servidor.' });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Pedido não encontrado.' });
+            }
+
+            res.status(200).json({ message: 'Status do pedido atualizado com sucesso.' });
         });
     }
 }

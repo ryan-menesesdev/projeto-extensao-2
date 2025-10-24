@@ -1,4 +1,4 @@
-const { getAllProducts } = require('../models/productModel');
+const { getAllProducts, alterProductAvailability } = require('../models/productModel');
 const { getProductById } = require('../models/productModel');
 const dbConn = require('../../config/dbConnection');
 
@@ -37,8 +37,35 @@ module.exports = {
             }
 
             res.status(200).json({ product: result[0] });
-        })
+        });
+    },
+    alterProductAvailability: (req, res) => {
+        if (!req.user || (req.user.role !== 'funcionario' && req.user.role !== 'supervisor')) {
+            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
+        }
 
+        const { id } = req.params;
+        const { disponivel } = req.body;
 
+        if (typeof disponivel !== 'boolean') {
+            return res.status(400).json({ error: 'A "disponibilidade" (true/false) é obrigatória no corpo da requisição.' });
+        }
+
+        const db = dbConn();
+
+        alterProductAvailability(db, disponivel, id, (error, result) => {
+            db.end();
+
+            if (error) {
+                console.log("Erro no Controller de PRODUTOS ao buscar por ID: ", error);
+                return res.status(500).json({ error: "Erro interno de servidor." });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Produto não encontrado.' });
+            }
+
+            res.status(200).json({ message: "Disponibilidade do produto alterada." });
+        });
     }
 }
