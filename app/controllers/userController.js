@@ -1,8 +1,10 @@
 const dbConn = require("../../config/dbConnection");
 const { 
-    createUser, 
-    updateUserById, 
-    deleteUserById 
+    getAllUsers, 
+    getUserById, 
+    createUser,
+    updateUserById,
+    deleteUserById
 } = require("../models/userModel");
 
 const validateUser = (data, isEdit = false) => {

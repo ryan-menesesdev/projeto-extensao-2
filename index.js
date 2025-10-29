@@ -1,5 +1,5 @@
 const express = require('express');
-const router = require('./app/routes/routes');
+const routes = require('./app/routes/routes.js'); 
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -10,15 +10,11 @@ app.set('views', './app/views');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const routes = require('./app/routes/routes.js');
-
 // Middleware para simular autenticação de usuário
 app.use((req, res, next) => {
-  // Simula um login de SUPERVISOR (Pode ver tudo)
-  req.user = { id: 6, nome: 'Thiago Supervisor Teste', role: 'supervisor' };
-
-  
-  next(); 
+  // Simula um login de SUPERVISOR (Pode ver tudo)
+  req.user = { id: 6, nome: 'Thiago Supervisor Teste', role: 'supervisor' };
+  next(); 
 });
 
 
@@ -29,26 +25,32 @@ routes.listCart(app);
 routes.listOrders(app);
 routes.getOrderById(app);
 
+
 routes.adminListOrders(app);
 routes.adminGetOrderById(app);
-routes.adminListUsers(app);
-routes.adminGetUserById(app);
 
 routes.adminListProducts(app); 
-routes.adminShowAddProductForm(app);
-routes.adminAddProduct(app);
-routes.adminShowEditProductForm(app);
-routes.adminUpdateProduct(app);
-routes.adminDeleteProduct(app);
-routes.adminShowAddUserForm(app);
-routes.adminAddUser(app);
-routes.adminShowEditUserForm(app);
-routes.adminUpdateUser(app);
-routes.adminDeleteUser(app);
+routes.adminShowAddProductForm(app); 
+routes.adminAddProduct(app);           
+routes.adminShowEditProductForm(app);  
+routes.adminUpdateProduct(app);     
+routes.adminDeleteProduct(app);       
 
-// A rota de erro deve ser a última
+
+
+routes.adminListUsers(app);    
+routes.adminShowAddUserForm(app);    
+routes.adminAddUser(app);            
+routes.adminShowEditProductForm(app); 
+routes.adminUpdateUser(app);         
+routes.adminDeleteUser(app);          
+
+
+routes.adminGetUserById(app);          
+
 routes.error(app);
 
+
 app.listen(port, () => {
-    console.log('Servidor rodando na porta: ' + port);
+    console.log('Servidor rodando na porta: ' + port);
 });
