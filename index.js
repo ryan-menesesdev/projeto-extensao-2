@@ -10,6 +10,8 @@ app.set('views', './app/views');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const routes = require('./app/routes/routes.js');
+
 // Middleware para simular autenticação de usuário
 app.use((req, res, next) => {
   // Simula um login de SUPERVISOR (Pode ver tudo)
