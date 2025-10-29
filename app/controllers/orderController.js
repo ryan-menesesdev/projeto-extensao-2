@@ -1,4 +1,6 @@
 const dbConn = require("../../config/dbConnection");
+const { getAdminOrderById, alterOrderStatus } = require("../models/orderModel");
+const { getAllOrders } = require("../models/orderModel");
 const { getOrdersByUserId, getOrderById } = require("../models/orderModel");
 
 module.exports = {
@@ -41,7 +43,7 @@ module.exports = {
             }
 
             if (!result.details) {
-                return res.status(404).json({ message: "Pedido não encontrado ou não pertence a este usuário." });
+                return res.status(400).json({ message: "Pedido não encontrado ou não pertence a este usuário." });
             }
             
             res.status(200).json({ order: result });
@@ -49,45 +51,76 @@ module.exports = {
     },
 
     showAllAdminOrders: (req, res) => {
-        // verificação
+
         if (!req.user || (req.user.role !== 'funcionario' && req.user.role !== 'supervisor')) {
-            return res.status(403).send('<h1>Acesso Negado</h1><p>Você não tem permissão para ver esta página.</p>');
+            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
         }
-        // --- FIM DA VERIFICAÇÃO ---
 
         const { status } = req.query;
+
         const db = dbConn();
-        const { getAllOrders } = require("../models/orderModel");
+
         getAllOrders(db, status, (error, orders) => {
             db.end();
+
             if (error) {
                 console.error("Erro no CONTROLLER (admin) ao listar pedidos:", error);
-                return res.status(500).render('error');
+                return res.status(500).json({ error: 'Erro interno do servidor.'});
             }
-            res.render('orders-list', { orders: orders });
+
+            res.status(200).json({ orders: orders });
         });
     },
 
     showAdminOrderDetails: (req, res) => {
-        // verificcao
         if (!req.user || (req.user.role !== 'funcionario' && req.user.role !== 'supervisor')) {
-            return res.status(403).send('<h1>Acesso Negado</h1><p>Você não tem permissão para ver esta página.</p>');
+            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
         }
        
-        
         const { id } = req.params;
+
         const db = dbConn();
-        const { getAdminOrderById } = require("../models/orderModel");
+
         getAdminOrderById(db, id, (error, order) => {
             db.end();
             if (error) {
                 console.error("Erro no CONTROLLER (admin) ao buscar pedido por ID:", error);
-                return res.status(500).render('error');
+                return res.status(500).json({ error: 'Erro interno do servidor.'});
             }
+
             if (!order) {
-                return res.status(404).render('error');
+                return res.status(400).json({ error: 'Pedido não encontrado.' });
             }
-            res.render('order-details', { order: order });
+
+            res.status(200).json({ order: order });
+        });
+    },
+    alterOrderStatus: (req, res) => {
+        if (!req.user || (req.user.role !== 'funcionario' && req.user.role !== 'supervisor')) {
+            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
+        }
+
+        const { id } = req.params;
+        const { statusPedido } = req.body;
+
+        if (!statusPedido) {
+            return res.status(400).json({ error: 'O novo "status" é obrigatório no corpo da requisição.' });
+        }
+
+        const db = dbConn();
+
+        alterOrderStatus(db, id, statusPedido, (error, result) => {
+            db.end();
+            
+            if (error) {
+                return res.status(500).json({ error: 'Erro interno no servidor.' });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Pedido não encontrado.' });
+            }
+
+            res.status(200).json({ message: 'Status do pedido atualizado com sucesso.' });
         });
     }
 }

@@ -1,5 +1,5 @@
 const express = require('express');
-const routes = require('./app/routes/routes');
+const router = require('./app/routes/routes');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -7,6 +7,7 @@ const port = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 app.set('views', './app/views');
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Middleware para simular autenticação de usuário
@@ -31,7 +32,7 @@ routes.adminGetOrderById(app);
 routes.adminListUsers(app);
 routes.adminGetUserById(app);
 
-
+// A rota de erro deve ser a última
 routes.error(app);
 
 app.listen(port, () => {
