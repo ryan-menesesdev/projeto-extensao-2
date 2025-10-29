@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- O título usa o nome do usuário -->
+    
     <title>Admin - Editar Usuário: <%= user.nome %></title>
     
 </head>
@@ -18,12 +18,12 @@
     </div>
 
     <div class="form-container">
-        <!-- O formulário envia para a rota de UPDATE, usando o ID do usuário -->
+       
         <form action="/admin/users/update/<%= user.id %>" method="POST">
             
             <div class="form-group">
                 <label for="nome">Nome Completo</label>
-                <!-- O 'value' é preenchido com os dados do usuário -->
+                
                 <input type="text" id="nome" name="nome" value="<%= user.nome %>" required>
             </div>
             
@@ -40,7 +40,7 @@
             <div class="form-group">
                 <label for="tipo">Tipo de Usuário</label>
                 <select id="tipo" name="tipo">
-                    <!-- Lógica para selecionar a opção correta -->
+                    
                     <option value="cliente" <%= user.tipo === 'cliente' ? 'selected' : '' %>>Cliente</option>
                     <option value="supervisor" <%= user.tipo === 'supervisor' ? 'selected' : '' %>>Supervisor</option>
                 </select>

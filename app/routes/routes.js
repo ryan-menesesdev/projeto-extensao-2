@@ -78,8 +78,7 @@ module.exports = {
     },
 
     
-
-
+    // --- Rotas Admin de Produtos ---
     adminListProducts: (app) => {
         // REQUISIÇÃO -> /admin/products
         app.get('/admin/products', showAdminProducts);
@@ -106,6 +105,7 @@ module.exports = {
     },
 
     
+    // --- Rotas Admin de Usuários ---
     adminShowAddUserForm: (app) => {
         // REQUISIÇÃO -> /admin/users/add 
         app.get('/admin/users/add', showAddUserForm);
@@ -127,4 +127,3 @@ module.exports = {
         app.post('/admin/users/delete/:id', deleteUser);
     }
 }
-

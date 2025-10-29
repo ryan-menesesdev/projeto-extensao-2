@@ -34,6 +34,18 @@ routes.adminGetOrderById(app);
 routes.adminListUsers(app);
 routes.adminGetUserById(app);
 
+routes.adminListProducts(app); 
+routes.adminShowAddProductForm(app);
+routes.adminAddProduct(app);
+routes.adminShowEditProductForm(app);
+routes.adminUpdateProduct(app);
+routes.adminDeleteProduct(app);
+routes.adminShowAddUserForm(app);
+routes.adminAddUser(app);
+routes.adminShowEditUserForm(app);
+routes.adminUpdateUser(app);
+routes.adminDeleteUser(app);
+
 // A rota de erro deve ser a última
 routes.error(app);
 

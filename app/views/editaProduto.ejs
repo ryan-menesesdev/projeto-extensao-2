@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- O título usa o nome do produto -->
+   
     <title>Admin - Editar Produto: <%= product.nome %></title>
     
 </head>
@@ -18,12 +18,12 @@
     </div>
 
     <div class="form-container">
-        <!-- O formulário envia para a rota de UPDATE, usando o ID do produto -->
+        
         <form action="/admin/products/update/<%= product.id %>" method="POST">
             
             <div class="form-group">
                 <label for="nome">Nome do Produto</label>
-                <!-- O 'value' é preenchido com os dados do produto -->
+               
                 <input type="text" id="nome" name="nome" value="<%= product.nome %>" required>
             </div>
             
@@ -34,7 +34,7 @@
             
             <div class="form-group">
                 <label for="descricao">Descrição</label>
-                <!-- O textarea é preenchido entre as tags -->
+          
                 <textarea id="descricao" name="descricao" rows="4"><%= product.descricao %></textarea>
             </div>
             
@@ -51,7 +51,7 @@
             <div class="form-group">
                 <label>Disponível?</label>
                 <select id="disponivel" name="disponivel">
-                    <!-- Lógica para selecionar a opção correta -->
+                 
                     <option value="1" <%= product.disponivel ? 'selected' : '' %>>Sim</option>
                     <option value="0" <%= !product.disponivel ? 'selected' : '' %>>Não</option>
                 </select>

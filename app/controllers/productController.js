@@ -124,7 +124,7 @@ module.exports = {
 
         const productData = {
             nome: req.body.nome,
-            preco: parseFloat(req.body.preco) * 100, 
+            preco: parseFloat(req.body.preco), 
             descricao: req.body.descricao || '',
             categoria: req.body.categoria || null,
             estoque: parseInt(req.body.estoque),
