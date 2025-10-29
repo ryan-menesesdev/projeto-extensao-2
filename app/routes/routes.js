@@ -1,11 +1,33 @@
 const { getCart } = require('../controllers/cartController');
-const { listOrders, getOrderById } = require('../controllers/orderController');
-const { listProducts } = require('../controllers/productController');
-const { getProductById } = require('../controllers/productController');
-const { showAllAdminOrders } = require('../controllers/orderController');
-const { showAdminOrderDetails } = require('../controllers/orderController');
-const { showAllUsers } = require('../controllers/userController');
-const { showUserDetails } = require('../controllers/userController');
+
+const { 
+    listOrders, 
+    getOrderById, 
+    showAllAdminOrders, 
+    showAdminOrderDetails 
+} = require('../controllers/orderController');
+
+const { 
+    listProducts, 
+    getProductById,
+    showAdminProducts,
+    showAddProductForm,
+    showEditProductForm,
+    addProduct,
+    updateProduct,
+    deleteProduct
+} = require('../controllers/productController');
+
+const { 
+    showAllUsers, 
+    showUserDetails,
+    showAddUserForm,
+    showEditUserForm,
+    addUser,
+    updateUser,
+    deleteUser
+} = require('../controllers/userController'); 
+
 
 module.exports = {
     listProducts: (app) => {
@@ -35,6 +57,8 @@ module.exports = {
             res.status(404).render('error.ejs');
         });
     },
+
+
     adminListOrders: (app) => {
         // REQUISIÇÃO -> /admin/orders ou /admin/orders?status=preparando
         app.get('/admin/orders', showAllAdminOrders);
@@ -50,5 +74,23 @@ module.exports = {
     adminGetUserById: (app) => {
         // REQUISIÇÃO -> /admin/users/1
         app.get('/admin/users/:id', showUserDetails);
-    }
+    },
+
+    //as rotas que eu coloquei novas******
+
+    adminShowAddUserForm: (app) => {
+        app.get('/admin/users/add', showAddUserForm);
+    },
+    adminShowEditUserForm: (app) => {
+        app.get('/admin/users/edit/:id', showEditUserForm);
+    },
+    adminAddUser: (app) => {
+        app.post('/admin/users/add', addUser);
+    },
+    adminUpdateUser: (app) => {
+        app.post('/admin/users/update/:id', updateUser);
+    },
+    adminDeleteUser: (app) => {
+        app.post('/admin/users/delete/:id', deleteUser);
+    },
 }

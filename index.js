@@ -31,7 +31,7 @@ routes.adminGetOrderById(app);
 routes.adminListUsers(app);
 routes.adminGetUserById(app);
 
-// A rota de erro deve ser a última
+
 routes.error(app);
 
 app.listen(port, () => {
