@@ -22,5 +22,54 @@ module.exports = {
         const params = [disponivel, id];
         
         db.query(sql, params, callback);
+
+    // as coisas nova que coloquei são daqui para baixo
+
+    getAllAdminProducts: (db, callback) => {
+        console.log('LER TODOS PRODUTOS do banco de dados');
+        const sql = 'SELECT * FROM produto ORDER BY nome ASC';
+        db.query(sql, callback);
+    },
+
+    
+    getAdminProductById: (db, id, callback) => {
+        console.log('LER PRODUTO POR ID do banco de dados');
+        const sql = 'SELECT * FROM produto WHERE id = ?';
+        db.query(sql, [id], (error, results) => {
+            if (error) {
+                return callback(error, null);
+            }
+            callback(null, results[0]); 
+        });
+    },
+
+    
+    createProduct: (db, productData, callback) => {
+        console.log('CRIAR PRODUTO no banco de dados');
+        const { categoria, descricao, imagem, nome, preco, disponivel } = productData;
+        const sql = `
+            INSERT INTO produto (categoria, descricao, imagem, nome, preco, disponivel) 
+            VALUES (?, ?, ?, ?, ?, ?)
+        `;
+        db.query(sql, [categoria, descricao, imagem, nome, preco, disponivel], callback);
+    },
+
+    
+    updateProductById: (db, id, productData, callback) => {
+        console.log('ATUALIZAR PRODUTO no banco de dados');
+        const { categoria, descricao, imagem, nome, preco, disponivel } = productData;
+        const sql = `
+            UPDATE produto 
+            SET categoria = ?, descricao = ?, imagem = ?, nome = ?, preco = ?, disponivel = ?
+            WHERE id = ?
+        `;
+        db.query(sql, [categoria, descricao, imagem, nome, preco, disponivel, id], callback);
+    },
+
+    
+    deleteProductById: (db, id, callback) => {
+        console.log('DELETAR PRODUTO no banco de dados');
+        const sql = 'DELETE FROM produto WHERE id = ?';
+        db.query(sql, [id], callback);
     }
 }

@@ -30,5 +30,16 @@
         <p>Nenhum usuário encontrado.</p>
     <% } %>
 
+    
+<form action="/admin/products/<%= product.id %>?_method=PUT" method="POST">
+  <!-- campos do formulário ... -->
+  <button type="submit">Atualizar</button>
+</form>
+
+
+    <form action="/admin/products/<%= product.id %>?_method=DELETE" method="POST">
+    <button type="submit">Deletar Produto</button>
+    </form>
+
 </body>
 </html>
