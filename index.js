@@ -1,5 +1,5 @@
 const express = require('express');
-const router = require('./app/routes/routes');
+const routes = require('./app/routes/routes.js'); 
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -10,12 +10,47 @@ app.set('views', './app/views');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(router);
-
-app.use((req, res) => {
-    res.status(404).json( { error: 'Rota não encontrada' });
+// Middleware para simular autenticação de usuário
+app.use((req, res, next) => {
+  // Simula um login de SUPERVISOR (Pode ver tudo)
+  req.user = { id: 6, nome: 'Thiago Supervisor Teste', role: 'supervisor' };
+  next(); 
 });
 
+
+
+routes.listProducts(app);
+routes.getProductById(app);
+routes.listCart(app);
+routes.listOrders(app);
+routes.getOrderById(app);
+
+
+routes.adminListOrders(app);
+routes.adminGetOrderById(app);
+
+routes.adminListProducts(app); 
+routes.adminShowAddProductForm(app); 
+routes.adminAddProduct(app);           
+routes.adminShowEditProductForm(app);  
+routes.adminUpdateProduct(app);     
+routes.adminDeleteProduct(app);       
+
+
+
+routes.adminListUsers(app);    
+routes.adminShowAddUserForm(app);    
+routes.adminAddUser(app);            
+routes.adminShowEditProductForm(app); 
+routes.adminUpdateUser(app);         
+routes.adminDeleteUser(app);          
+
+
+routes.adminGetUserById(app);          
+
+routes.error(app);
+
+
 app.listen(port, () => {
-    console.log('Servidor rodando na porta: ' + port);
+    console.log('Servidor rodando na porta: ' + port);
 });
