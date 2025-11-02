@@ -1,3 +1,20 @@
+const { getAllProducts, alterProductAvailability } = require('../models/productModel');
+const { getProductById } = require('../models/productModel');
+const { getAllAdminProducts } = require('../models/productModel');
+const { getAdminProductById } = require('../models/productModel');
+const { createProduct } = require('../models/productModel');
+const { updateProductById } = require('../models/productModel');
+const { deleteProductById } = require('../models/productModel');
+
+/*const {  mannn ese aqui é uma dica que o gemini passou, estava fazendo as coisas com ele, ai ele deu a dica de fazer assim quando for o mesmo endereço, mas se nao curir só apaga blz????
+    getAllProducts, 
+    getProductById,
+    getAllAdminProducts, 
+    getAdminProductById, 
+    createProduct,       
+    updateProductById,   
+    deleteProductById    
+} = require("../models/productModel");*/
 const { 
     getAllAdminProducts, 
     getAdminProductById, 

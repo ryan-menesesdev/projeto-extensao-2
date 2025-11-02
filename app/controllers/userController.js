@@ -18,8 +18,9 @@ module.exports = {
     showAllUsers: (req, res) => {
        
         if (!req.user || req.user.role !== 'supervisor') {
-            // Se não for supervisor, nega o acesso
-            return res.status(403).send('<h1>Acesso Negado</h1><p>Você não tem permissão para ver esta página.</p>');
+            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
+            
+      
         }
         
         const db = dbConn();
