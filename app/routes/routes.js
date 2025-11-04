@@ -1,3 +1,4 @@
+// app/routes/routes.js
 const express = require('express');
 const router = express.Router();
 
@@ -7,22 +8,45 @@ const { getCart, addProductToCart, updateCartItemQuantity, removeCartItem, final
 // Order Controller
 const { listOrders, getOrderById, showAllAdminOrders, showAdminOrderDetails, alterOrderStatus } = require('../controllers/orderController');
 
-// Product Controller
-const { listProducts, getProductById, alterProductAvailability } = require('../controllers/productController');
+// Product Controller 
+const { 
+    listProducts, 
+    getProductById, 
+    alterProductAvailability,
+    showAdminProducts,
+    showAddProductForm,
+    addProduct,
+    showEditProductForm,
+    updateProduct,
+    deleteProduct
+} = require('../controllers/productController');
 
-// User Controller
-const { showAllUsers, showUserDetails } = require('../controllers/userController');
+// User Controller 
+const { 
+    showAllUsers, 
+    showUserDetails,
+    showAddUserForm,
+    addUser,
+    showEditUserForm,
+    updateUser,
+    deleteUser
+} = require('../controllers/userController');
+
+
+//MIDDLEWARE DE AUTENTICAÇÃO 
 
 // Criar Header com key 'x-dev-role' e valor com 'funcionario' ou 'supervisor' para simular validação
 function devAuth(req, res, next) {
-    const role = req.headers['x-dev-role'] || req.query.asRole;
-    if (role) {
-        req.user = { id: 1, role: role };
-    }
-    next();
+    const role = req.headers['x-dev-role'] || req.query.asRole;
+    if (role) {
+        req.user = { id: 1, role: role };
+    }
+    next();
 }
 
-// CLIENTE
+
+// ROTAS PÚBLICAS (CLIENTE) 
+
 
 // REQUISIÇÃO -> /products ou /products?categoria=bolo
 router.get('/products', listProducts);
@@ -55,41 +79,55 @@ router.delete('/cart/products/:productId', removeCartItem);
 // Body: { "userId": 1, "metodoPagamento": "pix" }
 router.post('/payment', finalizeCheckout);
 
-// ADMIN
+//ROTAS DE ADMIN (SUPERVISOR) 
 
+// Admin: Pedidos 
 // REQUISIÇÃO -> /admin/orders ou /admin/orders?status=preparando
 router.get('/admin/orders', devAuth, showAllAdminOrders);
 
 // REQUISIÇÃO -> /admin/orders/1
-// Body: { "userId": 1, "metodoPagamento": "pix" }
 router.get('/admin/orders/:id', devAuth, showAdminOrderDetails);
 
 // REQUISIÇÃO -> /admin/orders/1
 // Body: { "statusPedido": "Preparando" }
 router.patch('/admin/orders/:id', devAuth, alterOrderStatus);
 
+// Admin: Produto
+
+// REQUISIÇÃO -> /admin/products
+router.get('/admin/products', devAuth, showAdminProducts);
+// REQUISIÇÃO -> /admin/products/add 
+router.get('/admin/products/add', devAuth, showAddProductForm);
+// REQUISIÇÃO -> /admin/products/add 
+router.post('/admin/products/add', devAuth, addProduct);
+// REQUISIÇÃO -> /admin/products/edit/1 
+router.get('/admin/products/edit/:id', devAuth, showEditProductForm);
+// REQUISIÇÃO -> /admin/products/update/1 
+router.post('/admin/products/update/:id', devAuth, updateProduct);
+// REQUISIÇÃO -> /admin/products/delete/1 
+router.post('/admin/products/delete/:id', devAuth, deleteProduct);
 // REQUISIÇÃO -> /admin/products/1
 // Body: { disponivel: false }
 router.patch('/admin/products/:id', devAuth, alterProductAvailability);
 
+
+// Admin: Usuários (Users)
+
 // REQUISIÇÃO -> /admin/users
 router.get('/admin/users', devAuth, showAllUsers);
-
-// REQUISIÇÃO -> /admin/users/1
-router.get('/admin/users/:id', devAuth, showUserDetails);
-
-router.get('/admin/users', devAuth, showAllUsers);
-
+// REQUISIÇÃO -> /admin/users/add 
 router.get('/admin/users/add', devAuth, showAddUserForm);
-
+// REQUISIÇÃO -> /admin/users/add 
 router.post('/admin/users/add', devAuth, addUser);
-
+// REQUISIÇÃO -> /admin/users/edit/1 
 router.get('/admin/users/edit/:id', devAuth, showEditUserForm);
-
+// REQUISIÇÃO -> /admin/users/update/1 
 router.post('/admin/users/update/:id', devAuth, updateUser);
-
+// REQUISIÇÃO -> /admin/users/delete/1 
 router.post('/admin/users/delete/:id', devAuth, deleteUser);
-
+// REQUISIÇÃO -> /admin/users/1 (Rota dinâmica /:id deve ser a ÚLTIMA)
 router.get('/admin/users/:id', devAuth, showUserDetails);
+
 
 module.exports = router;
+

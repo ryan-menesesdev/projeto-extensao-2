@@ -54,7 +54,6 @@ module.exports = {
         if (!req.user || req.user.role !== 'supervisor') {
             return res.status(403).send('<h1>Acesso Negado</h1>');
         }
-        // Nome do EJS: 'admin-add-user.ejs'
         res.status(200).render('addUsuario');
     },
 
@@ -97,7 +96,7 @@ module.exports = {
             nome: nome,
             cpf: cpf,
             email: email,
-            senha_hash: senha, // A senha é salva diretamente
+            senha_hash: senha, 
             telefone: telefone || '',
             tipo: tipo
         };

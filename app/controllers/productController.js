@@ -126,7 +126,6 @@ module.exports = {
             preco: req.body.preco,
             descricao: req.body.descricao,
             categoria: req.body.categoria,
-            estoque: req.body.estoque,
             disponivel: req.body.disponivel === 'on' ? 1 : 0 
         };
 
@@ -153,7 +152,6 @@ module.exports = {
             preco: req.body.preco,
             descricao: req.body.descricao,
             categoria: req.body.categoria,
-            estoque: req.body.estoque,
             disponivel: req.body.disponivel === 'on' ? 1 : 0 
         };
 
