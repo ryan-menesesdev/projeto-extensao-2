@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <title>Admin - Lista de Produtos</title>
+    
+</head>
+<body>
+
+    <h1>Painel de Admin - Lista de Produtos</h1>
+
+    
+    <div class="nav">
+        <a href="/admin/products">Ver Produtos</a>
+        <a href="/admin/users">Ver Usuários</a>
+    </div>
+
+   
+    <a href="/admin/products/add" class="add-btn">Adicionar Novo Produto</a>
+
+    <% if (typeof products !== 'undefined' && products.length > 0) { %>
+        <ul>
+            <% products.forEach(product => { %>
+                <li>
+                    <span>
+                        <strong>Nome:</strong> <%= product.nome %> | 
+                       
+                        <strong>Preço:</strong> R$ <%= (product.preco ).toFixed(2).replace('.', ',') %> | 
+                        <strong>Estoque:</strong> <%= product.estoque %> |
+                        <strong>Disponível:</strong> <%= product.disponivel ? 'Sim' : 'Não' %>
+                    </span>
+                    
+                    <div class="actions">
+                       
+                        <a href="/admin/products/edit/<%= product.id %>" class="edit-link">Editar</a>
+                        
+                        
+                        <form action="/admin/products/delete/<%= product.id %>" method="POST" class="delete-form" onsubmit="return confirm('Tem certeza que quer deletar este produto?');">
+                            <button type="submit" class="delete-btn">Deletar</button>
+                        </form>
+                    </div>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p>Nenhum produto encontrado.</p>
+    <% } %>
+
+</body>
+</html>
+

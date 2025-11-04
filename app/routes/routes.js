@@ -78,4 +78,18 @@ router.get('/admin/users', devAuth, showAllUsers);
 // REQUISIÇÃO -> /admin/users/1
 router.get('/admin/users/:id', devAuth, showUserDetails);
 
+router.get('/admin/users', devAuth, showAllUsers);
+
+router.get('/admin/users/add', devAuth, showAddUserForm);
+
+router.post('/admin/users/add', devAuth, addUser);
+
+router.get('/admin/users/edit/:id', devAuth, showEditUserForm);
+
+router.post('/admin/users/update/:id', devAuth, updateUser);
+
+router.post('/admin/users/delete/:id', devAuth, deleteUser);
+
+router.get('/admin/users/:id', devAuth, showUserDetails);
+
 module.exports = router;

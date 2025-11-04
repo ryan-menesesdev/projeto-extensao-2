@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Admin - Editar Usuário: <%= user.nome %></title>
+    
+</head>
+<body>
+
+    <h1>Painel de Admin - Editar Usuário</h1>
+    <h2><%= user.nome %></h2>
+
+    <div class="nav">
+        <a href="/admin/products">Ver Produtos</a>
+        <a href="/admin/users">Ver Usuários</a>
+    </div>
+
+    <div class="form-container">
+       
+        <form action="/admin/users/update/<%= user.id %>" method="POST">
+            
+            <div class="form-group">
+                <label for="nome">Nome Completo</label>
+                
+                <input type="text" id="nome" name="nome" value="<%= user.nome %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="<%= user.email %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <input type="text" id="telefone" name="telefone" value="<%= user.telefone || '' %>">
+            </div>
+            
+            <div class="form-group">
+                <label for="tipo">Tipo de Usuário</label>
+                <select id="tipo" name="tipo">
+                    
+                    <option value="cliente" <%= user.tipo === 'cliente' ? 'selected' : '' %>>Cliente</option>
+                    <option value="supervisor" <%= user.tipo === 'supervisor' ? 'selected' : '' %>>Supervisor</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="submit-btn">Atualizar Usuário</button>
+        </form>
+
+        <a href="/admin/users" class="cancel-link">Cancelar e voltar para a lista</a>
+    </div>
+
+</body>
+</html>
+
