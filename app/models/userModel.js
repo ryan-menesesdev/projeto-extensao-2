@@ -12,7 +12,7 @@ module.exports = {
             if (error) {
                 return callback(error, null);
             }
-            // Retorna apenas o primeiro objeto do array, ou null se não encontrar
+
             callback(null, results.length > 0 ? results[0] : null);
         });
     }

@@ -48,8 +48,6 @@ module.exports = {
         });
     },
 
-    //adicionado 
-
     showAddUserForm: (req, res) => {
         if (!req.user || req.user.role !== 'supervisor') {
             return res.status(403).send('<h1>Acesso Negado</h1>');
@@ -83,7 +81,6 @@ module.exports = {
             return res.status(403).send('<h1>Acesso Negado</h1>');
         }
 
-        // Validação
         const errorMsg = validateUser(req.body);
         if (errorMsg) {
             return res.status(400).send(`Erro de validação: ${errorMsg}`);

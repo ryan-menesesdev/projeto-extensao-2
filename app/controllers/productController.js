@@ -68,8 +68,6 @@ module.exports = {
             res.status(200).json({ message: "Disponibilidade do produto alterada." });
         });
     },
-
-    //coisas que adicionei 
      
      showAdminProducts: (req, res) => {
         if (!req.user || req.user.role !== 'supervisor') {
@@ -77,12 +75,14 @@ module.exports = {
         }
         
         const db = dbConn();
+
         getAllAdminProducts(db, (error, products) => {
             db.end();
             if (error) {
                 console.error("Erro ao listar produtos", error);
                 return res.status(500).render('error');
             }
+
             res.render('listaProdutos', { products: products });
         });
     },
@@ -129,7 +129,7 @@ module.exports = {
             disponivel: req.body.disponivel === 'on' ? 1 : 0 
         };
 
-    const db = dbConn();
+        const db = dbConn();
         createProduct(db, productData, (error, result) => {
             db.end();
             if (error) {
