@@ -25,9 +25,7 @@ const {
     getProductById, 
     alterProductAvailability,
     showAdminProducts,
-    showAddProductForm,
     addProduct,
-    showEditProductForm,
     updateProduct,
     deleteProduct
 } = require('../controllers/productController');
@@ -36,9 +34,7 @@ const {
 const { 
     showAllUsers, 
     showUserDetails,
-    showAddUserForm,
     addUser,
-    showEditUserForm,
     updateUser,
     deleteUser
 } = require('../controllers/userController');
@@ -119,23 +115,19 @@ router.patch('/admin/orders/:id', devAuth, alterOrderStatus);
 
 // - Product
 
-// REQUISIÇÃO -> /admin/products
+// REQUISIÇÃO -> /admin/products ou /admin/products?categoria=bolo              
 router.get('/admin/products', devAuth, showAdminProducts);
 
-// REQUISIÇÃO -> /admin/products/add 
-router.get('/admin/products/add', devAuth, showAddProductForm);
+// REQUISIÇÃO -> /admin/products                    
+// Body: { "categoria": "Bebidas", "descricao": "Suco de laranja 100% natural, garrafa de 1L.", "imagem": "/imagens/produtos/suco-laranja-1l.jpg", "nome": "Suco de Laranja Natural", "preco": 12.50 }        
+router.post('/admin/products', devAuth, addProduct);
 
-// REQUISIÇÃO -> /admin/products/add 
-router.post('/admin/products/add', devAuth, addProduct);
+// REQUISIÇÃO -> /admin/products/1                
+// Body: { "categoria": "bolo", "descricao": "Bolo de fubá cremoso", "imagem": "http://example.com/images/bolo_fuba.jpg", "nome": "Bolo de Fubá", "preco": 20, "disponivel": 1 }         
+router.put('/admin/products/:id', devAuth, updateProduct);
 
-// REQUISIÇÃO -> /admin/products/edit/1 
-router.get('/admin/products/edit/:id', devAuth, showEditProductForm);
-
-// REQUISIÇÃO -> /admin/products/update/1 
-router.post('/admin/products/update/:id', devAuth, updateProduct);
-
-// REQUISIÇÃO -> /admin/products/delete/1 
-router.post('/admin/products/delete/:id', devAuth, deleteProduct);
+// REQUISIÇÃO -> /admin/products/1                
+router.delete('/admin/products/:id', devAuth, deleteProduct);
 
 // REQUISIÇÃO -> /admin/products/1
 // Body: { disponivel: false }
@@ -144,26 +136,22 @@ router.patch('/admin/products/:id', devAuth, alterProductAvailability);
 
 // - User
 
-// REQUISIÇÃO -> /admin/users
+// REQUISIÇÃO -> /admin/users ou /admin/users?tipo=funcionario                 
 router.get('/admin/users', devAuth, showAllUsers);
 
-// REQUISIÇÃO -> /admin/users/add 
-router.get('/admin/users/add', devAuth, showAddUserForm);
-
-// REQUISIÇÃO -> /admin/users/add 
-router.post('/admin/users/add', devAuth, addUser);
-
-// REQUISIÇÃO -> /admin/users/edit/1 
-router.get('/admin/users/edit/:id', devAuth, showEditUserForm);
-
-// REQUISIÇÃO -> /admin/users/update/1 
-router.post('/admin/users/update/:id', devAuth, updateUser);
-
-// REQUISIÇÃO -> /admin/users/delete/1 
-router.post('/admin/users/delete/:id', devAuth, deleteUser);
-
-// REQUISIÇÃO -> /admin/users/1 
+// REQUISIÇÃO -> /admin/users/1                 
 router.get('/admin/users/:id', devAuth, showUserDetails);
+
+// REQUISIÇÃO -> /admin/users/add               
+// Body: { "cpf": "124.456.789-00", "nome": "Pedro Silva", "senha": "senhaSegura123!", "tipo": "cliente", "telefone": "19912345678", "email": "pedro.silva@email.com" }  
+router.post('/admin/users', devAuth, addUser);
+
+// REQUISIÇÃO -> /admin/users/update/1                 
+// Body: { "nome": "Pedro Mario", "email": "pedro.mario@email.com", "telefone": "12312312312", "tipo": "supervisor" }
+router.put('/admin/users/:id', devAuth, updateUser);
+
+// REQUISIÇÃO -> /admin/users/delete/1                 
+router.delete('/admin/users/:id', devAuth, deleteUser);
 
 module.exports = router;
 

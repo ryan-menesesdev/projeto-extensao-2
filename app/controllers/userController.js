@@ -1,5 +1,5 @@
 const dbConn = require("../../config/dbConnection");
-const { getAllUsers, getUserById } = require("../models/userModel");
+const { getAllUsers, getUserById, addUser, updateUser, deleteUser } = require("../models/userModel");
 
 module.exports = {
     showAllUsers: (req, res) => {
@@ -7,10 +7,12 @@ module.exports = {
         if (!req.user || req.user.role !== 'supervisor') {
             return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
         }
+
+        const { tipo } = req.query;
         
         const db = dbConn();
 
-        getAllUsers(db, (error, users) => {
+        getAllUsers(db, tipo, (error, result) => {
             db.end();
 
             if (error) {
@@ -18,7 +20,7 @@ module.exports = {
                 return res.status(500).json({ error: 'Erro interno do servidor.'});
             }
 
-            res.status(200).json({ users: users });
+            res.status(200).json({ users: result });
         });
     },
 
@@ -32,7 +34,7 @@ module.exports = {
 
         const db = dbConn();
 
-        getUserById(db, id, (error, user) => {
+        getUserById(db, id, (error, result) => {
             db.end();
             
             if (error) {
@@ -40,129 +42,101 @@ module.exports = {
                 return res.status(500).json({ error: 'Erro interno do servidor.'});
             }
 
-            if (!user) {
+            if (!result) {
                 return res.status(400).json({ error: 'Usuário não encontrado.' });
             }
             
-            res.status(200).json({ user: user });
+            res.status(200).json({ user: result });
         });
     },
-
-    showAddUserForm: (req, res) => {
-        if (!req.user || req.user.role !== 'supervisor') {
-            return res.status(403).send('<h1>Acesso Negado</h1>');
-        }
-        res.status(200).render('addUsuario');
-    },
-
-    
-    showEditUserForm: (req, res) => {
-        if (!req.user || req.user.role !== 'supervisor') {
-            return res.status(403).send('<h1>Acesso Negado</h1>');
-        }
-        
-        const { id } = req.params;
-        const db = dbConn();
-      
-        getUserById(db, id, (error, user) => {
-            db.end();
-            if (error || !user) {
-                console.error("Erro no CONTROLLER ao buscar usuário para editar:", error);
-                return res.status(404).render('error');
-            }
-           
-            res.status(200).render('editaUsuario', { user: user });
-        });
-    },
-
     
     addUser: (req, res) => {
         if (!req.user || req.user.role !== 'supervisor') {
-            return res.status(403).send('<h1>Acesso Negado</h1>');
+            return res.status(403).json({ error: 'Acesso Negado' });
         }
 
-        const errorMsg = validateUser(req.body);
-        if (errorMsg) {
-            return res.status(400).send(`Erro de validação: ${errorMsg}`);
-        }
-        
         const { cpf, nome, senha, tipo, telefone, email } = req.body;
-
         
         const userData = {
-            nome: nome,
-            cpf: cpf,
-            email: email,
-            senha_hash: senha, 
-            telefone: telefone || '',
-            tipo: tipo
+            cpf,
+            nome,
+            senha, 
+            tipo,
+            telefone,
+            email
         };
 
         const db = dbConn();
-        createUser(db, userData, (error, result) => {
+        addUser(db, userData, (error, result) => {
             db.end();
             if (error) {
-                
                 if (error.code === 'ER_DUP_ENTRY') {
-                    return res.status(400).send('Erro: Este email já está cadastrado.');
+                    return res.status(400).json({ error: 'Erro: Este email ou CPF já está cadastrado.' });
                 }
                 console.error("Erro no CONTROLLER ao ADICIONAR usuário:", error);
-                return res.status(500).render('error');
+                return res.status(500).json({ error: 'Erro interno do servidor.' });
             }
-            res.redirect('/admin/users');
+
+            res.status(201).json({ message: 'Usuário adicionado com sucesso!', userId: result.insertId });
         });
     },
 
-    
-
     updateUser: (req, res) => {
         if (!req.user || req.user.role !== 'supervisor') {
-            return res.status(403).send('<h1>Acesso Negado</h1>');
+            return res.status(403).json({ error: 'Acesso Negado' });
         }
         
         const { id } = req.params;
-
-        
-        if (!req.body.nome || !req.body.email) {
-            return res.status(400).send('Nome e Email são obrigatórios.');
-        }
 
         const userData = {
             nome: req.body.nome,
             email: req.body.email,
-            telefone: req.body.telefone || '',
+            telefone: req.body.telefone,
             tipo: req.body.tipo
         };
 
         const db = dbConn();
-        updateUserById(db, id, userData, (error, result) => {
+        updateUser(db, id, userData, (error, result) => {
             db.end();
             if (error) {
                 if (error.code === 'ER_DUP_ENTRY') {
-                    return res.status(400).send('Erro: Este email já está cadastrado.');
+
+                    return res.status(400).json({ error: 'Erro: Este email já está cadastrado.' });
                 }
                 console.error("Erro no CONTROLLER ao ATUALIZAR usuário:", error);
-                return res.status(500).render('error');
+
+                return res.status(500).json({ error: 'Erro interno do servidor.' });
             }
-            res.redirect('/admin/users');
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Usuário não encontrado.' });
+            }
+
+            res.status(200).json({ message: 'Usuário atualizado com sucesso!' });
         });
     },
 
-
     deleteUser: (req, res) => {
         if (!req.user || req.user.role !== 'supervisor') {
-            return res.status(403).send('<h1>Acesso Negado</h1>');
+
+            return res.status(403).json({ error: 'Acesso Negado' });
         }
         
         const { id } = req.params;
         const db = dbConn();
-        deleteUserById(db, id, (error, result) => {
+        deleteUser(db, id, (error, result) => {
             db.end();
             if (error) {
                 console.error("Erro no CONTROLLER ao DELETAR usuário:", error);
-                return res.status(500).render('error');
+
+                return res.status(500).json({ error: 'Erro interno do servidor.' });
             }
-            res.redirect('/admin/users');
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Usuário não encontrado.' });
+            }
+
+            res.status(200).json({ message: 'Usuário deletado com sucesso!' });
         });
     }
 };
