@@ -17,7 +17,10 @@ module.exports = {
                 return res.status(500).json({ error: "Erro interno do servidor." });
             }
             
-            res.status(200).json({products: result});
+            res.render('client/products', {
+                title: categoria ? `${categoria.charAt(0).toUpperCase() + categoria.slice(1)} - Sinhá Bolos e Lanches` : 'Produtos - Sinhá Bolos e Lanches',
+                products: result,
+            })
         })
     },
     getProductById: async (req, res) => {

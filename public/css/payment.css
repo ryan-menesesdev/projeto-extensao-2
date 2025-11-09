@@ -1,0 +1,69 @@
+.payment-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 100px;
+    padding: 9rem 0rem;
+}
+
+.payment-section-up {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.payment-section-title {
+    color: #AC1B11;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.payment-section-down {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#next-steps-title {
+    color: #AC1B11;
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+.payment-section-text {
+    font-size: 1.3rem;
+}
+
+.payment-section-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    list-style-type: disc
+}
+
+@media (max-width: 768px) {
+    .payment-section {
+        gap: 50px;
+        padding: 4rem 1rem;
+    }
+
+    .payment-section-title {
+        font-size: 1.6rem;
+        text-align: center;
+    }
+
+    #next-steps-title {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .payment-section-text {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .payment-section-list {
+        padding-left: 25px;
+    }
+}

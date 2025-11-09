@@ -1,0 +1,73 @@
+const express = require('express');
+const clientRouter = express.Router();
+
+// Cart Controller
+const { 
+    getCart, 
+    addProductToCart, 
+    updateCartItemQuantity, 
+    removeCartItem, 
+    finalizeCheckout 
+} = require('../controllers/cartController');
+
+// Order Controller
+const { 
+    listOrders, 
+    getOrderById, 
+} = require('../controllers/orderController');
+
+// Product Controller 
+const { 
+    listProducts, 
+    getProductById, 
+} = require('../controllers/productController');
+
+// ROTAS PÚBLICAS (CLIENTE) 
+
+// - Product
+
+// REQUISIÇÃO -> /products ou /products?categoria=bolo
+clientRouter.get('/products', listProducts);
+
+// REQUISIÇÃO -> /products/1
+clientRouter.get('/products/:id', getProductById);
+
+// ------------------------------------------------------------------------------------------------------------
+
+// - Order
+
+// REQUISIÇÃO -> /orders?userId=1 
+clientRouter.get('/orders', listOrders);
+
+// REQUISIÇÃO -> /orders/1?userId=1
+clientRouter.get('/orders/:id', getOrderById);
+
+// ------------------------------------------------------------------------------------------------------------
+
+// - Cart
+
+// REQUISIÇÃO -> /cart?userId=1
+clientRouter.get('/cart', getCart);
+
+// REQUISIÇÃO -> /cart/add
+// Body: { "userId": 1, "productId": 3 }
+clientRouter.post('/cart/add', addProductToCart);
+
+// REQUISIÇÃO -> PUT /cart/products/1 
+// Body: { "userId": 1, "quantity": 3 }
+clientRouter.put('/cart/products/:productId', updateCartItemQuantity);
+
+// REQUISIÇÃO -> DELETE /cart/products/1 
+// Body: { "userId": 1 }
+clientRouter.delete('/cart/products/:productId', removeCartItem);
+
+// ------------------------------------------------------------------------------------------------------------
+
+// - Payment
+
+// REQUISIÇÃO -> POST /payment
+// Body: { "userId": 1, "metodoPagamento": "pix" }
+clientRouter.post('/payment', finalizeCheckout);
+
+module.exports = clientRouter;
+

@@ -1,0 +1,163 @@
+.contact-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0rem;
+}
+
+.contact-section-title-container {
+    padding-bottom: 4rem;
+}
+
+.contact-section-title {
+    color: #AC1B11;
+    font-size: 3rem;
+    font-weight: 500;
+}
+
+.contact-section-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+
+.contact-section-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    border-left: 1px solid #AC1B11;
+    padding: 1rem 5rem;
+}
+
+.contact-section-img {
+    width: 35%;
+}
+
+.contact-section-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact-section-value {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.contact-section-label {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.contact-section-input {
+    padding: 1rem 1rem;
+    border: 1px #000000 solid;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-family: inherit;
+    font-size: inherit;     
+}
+
+.contact-section-button {
+    padding: 1rem 0rem;
+    border-radius: 8px;
+    background-color: #AC1B11;
+    border: none;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.contact-section-button:hover {
+    background-color: #83160e;
+}
+
+.contact-section-form-media {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    padding-top: 1rem;
+}
+
+.contact-section-form-text {
+    color: #AC1B11;
+}
+
+.contact-section-form-icon {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+.button {
+    padding-bottom: .5rem;
+    border-bottom: 3px #AC1B11 solid;
+}
+
+.fa-whatsapp {
+    font-size: 3rem; 
+    color: #AC1B11; 
+    transition: transform 0.2s ease-in-out;
+}
+
+.fa-instagram {
+    font-size: 3rem;
+    color: #AC1B11;
+    transition: transform 0.2s ease-in-out; 
+}
+
+@media (max-width: 768px) {
+    .contact-section {
+        padding: 2rem 1rem 0rem 1rem;
+    }
+
+    .contact-section-title-container {
+        padding-bottom: 2rem;
+    }
+
+    .contact-section-title {
+        font-size: 2rem;
+        text-align: center;
+    }
+
+    .contact-section-content {
+        flex-direction: column;
+        gap: 2rem;
+        width: 100%;
+    }
+
+    .contact-section-img {
+        width: 50%;
+        max-width: 200px;
+    }
+
+    .contact-section-form-container {
+        width: 100%;
+        padding: 2rem 1rem;
+        border: none;
+    }
+
+    .contact-section-label,
+    .contact-section-input {
+        font-size: 1rem;
+    }
+
+    .contact-section-button {
+        font-size: 1.2rem;
+    }
+
+    .contact-section-form-icon {
+        gap: 40px;
+    }
+
+    .fa-whatsapp,
+    .fa-instagram {
+        font-size: 2.8rem;
+    }
+}
