@@ -20,6 +20,13 @@ module.exports = {
 
         db.query(sql, params, callback);
     },
+    findByEmail: (db, email, callback) => {
+        const sql = "SELECT * FROM usuario WHERE email = ? LIMIT 1";
+        db.query(sql, [email], (err, results) => {
+            if (err) return callback(err);
+            return callback(null, results[0]);
+        });
+    },
     addUser: (db, userData, callback) => {
         const sql = "INSERT INTO usuario SET ?";
         db.query(sql, userData, callback);

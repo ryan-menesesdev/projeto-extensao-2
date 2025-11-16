@@ -1,6 +1,8 @@
 const express = require('express');
 const clientRouter = express.Router();
 
+const { register } = require('../controllers/authController')
+
 // Cart Controller
 const { 
     getCart, 
@@ -23,6 +25,8 @@ const {
 } = require('../controllers/productController');
 
 // ROTAS PÚBLICAS (CLIENTE) 
+
+clientRouter.post('/register', register);
 
 // - Product
 

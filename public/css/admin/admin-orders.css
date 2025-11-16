@@ -1,0 +1,227 @@
+:root {
+    --color-primary: #AC1B11;
+    --color-highlight-bg: #facfca;
+    --color-background: #FDFCFC;
+    --color-text: #000000;
+    --color-white: #FFFFFF;
+    --color-border: #E0E0E0;
+}
+
+.orders-main-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.orders-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 2rem;
+}
+
+.orders-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.filter-btn {
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid var(--color-primary);
+    border-radius: 50px;
+    background-color: var(--color-white);
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.filter-btn:hover {
+    background-color: var(--color-highlight-bg);
+}
+
+.filter-btn.active {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    background-color: var(--color-white);
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-table th,
+.orders-table td {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.orders-table th {
+    background-color: #fcf8f8;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-primary);
+}
+
+.orders-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.orders-table tbody tr:hover {
+    background-color: #fdfdfd;
+}
+
+.order-id-link {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+.order-id-link:hover {
+    text-decoration: underline;
+}
+
+.loading-cell,
+.error-cell {
+    text-align: center;
+    padding: 3rem;
+    font-style: italic;
+    color: #777;
+}
+.error-cell {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.status-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.85em;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-pago,
+.status-aprovado {
+    background-color: #d4edda;
+    color: #155724;
+}
+.status-pendente,
+.status-recusado {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-recebido {
+    background-color: #e0e0e0;
+    color: #333;
+}
+.status-em-preparo {
+    background-color: #fff3cd;
+    color: #856404;
+}
+.status-pronto-para-retirada {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+.status-finalizado {
+    background-color: #d6d8db;
+    color: #383d41;
+}
+
+.action-cell {
+    min-width: 200px;
+}
+
+.status-select {
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+.status-select:focus {
+    outline: 2px solid var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.toast {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 1rem;
+    position: fixed;
+    z-index: 100;
+    right: 30px;
+    bottom: 30px;
+    font-size: 1rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.toast.show {
+    visibility: visible;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+.toast.success {
+    background-color: #155724;
+}
+.toast.error {
+    background-color: #721c24;
+}
+
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+
+@media (max-width: 768px) {
+    .orders-main-container {
+        padding: 0 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .orders-title {
+        font-size: 2rem;
+    }
+
+    .orders-filter-bar {
+        gap: 0.5rem;
+    }
+
+    .filter-btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+}

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Fila de Pedidos - Painel Administrativo">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" type="image/png" href="/images/logo-better-nobackground.png">
+    
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/admin/admin-home.css"> 
+    <link rel="stylesheet" href="/css/admin/admin-orders.css"> 
+    <title>Fila de Pedidos - Painel</title>
+</head>
+<body>
+
+    <header class="admin-header">
+        <div class="header-container">
+            <a href="/admin/home" class="header-link" aria-label="Painel Administrativo">
+                <div class="header-left">
+                    <img src="/images/logo-better-nobackground.png" alt="Logo da Sinhá Bolos e Lanches" class="header-logo">
+                    <span class="header-logo-title">Painel Administrativo</span>
+                </div>
+            </a>
+            <nav class="header-right-admin">
+                <span>Olá, <%= usuario.nome %>!</span>
+                <a href="/logout" class="admin-logout-btn">
+                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sair
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="orders-main-container">
+            <h1 class="orders-title">Fila de Pedidos</h1>
+
+            <nav class="orders-filter-bar" id="filter-bar">
+                <button class="filter-btn active" data-status="">Todos</button>
+                <button class="filter-btn" data-status="Recebido">Recebidos</button>
+                <button class="filter-btn" data-status="Em Preparo">Em Preparo</button>
+                <button class="filter-btn" data-status="Pronto para Retirada">Prontos</button>
+                <button class="filter-btn" data-status="Finalizado">Finalizados</button>
+            </nav>
+
+            <div class="table-container">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Pedido ID</th>
+                            <th>Cliente</th>
+                            <th>Data/Hora</th>
+                            <th>Pagamento</th>
+                            <th>Status do Pedido</th>
+                            <th>Ação (Mudar Status)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-table-body">
+                        <tr>
+                            <td colspan="6" class="loading-cell">Carregando pedidos...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer class="admin-footer">
+        <div class="footer-container">
+            <p class="footer-text">©2025 Sinhá Bolos e Lanches. Painel Administrativo.</p>
+        </div>
+    </footer>
+
+    <div id="toast-notification" class="toast"></div>
+
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tableBody = document.getElementById('orders-table-body');
+            const filterBar = document.getElementById('filter-bar');
+            let currentStatusFilter = ''; // Filtro de status ativo
+
+            // --- FUNÇÕES PRINCIPAIS ---
+
+            /**
+             * Busca pedidos da API com base no filtro de status
+             */
+            const fetchOrders = async (status = '') => {
+                tableBody.innerHTML = '<tr><td colspan="6" class="loading-cell">Carregando pedidos...</td></tr>';
+                
+                const url = status ? `/admin/orders?status=${encodeURIComponent(status)}` : '/admin/orders';
+                
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`Erro HTTP: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    renderOrders(data.orders);
+                } catch (error) {
+                    console.error('Erro ao buscar pedidos:', error);
+                    tableBody.innerHTML = '<tr><td colspan="6" class="error-cell">Não foi possível carregar os pedidos.</td></tr>';
+                }
+            };
+
+            /**
+             * Renderiza os pedidos na tabela
+             */
+            const renderOrders = (orders) => {
+                tableBody.innerHTML = ''; // Limpa a tabela
+
+                if (orders.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="6" class="loading-cell">Nenhum pedido encontrado.</td></tr>';
+                    return;
+                }
+
+                orders.forEach(order => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>
+                            <a href="/admin/orders/${order.id}" class="order-id-link">
+                                #${String(order.id).padStart(4, '0')}
+                            </a>
+                        </td>
+                        <td>${order.nomeCliente}</td>
+                        <td>${formatDate(order.criadoEm)}</td>
+                        <td>${createStatusBadge(order.statusPagamento)}</td>
+                        <td>${createStatusBadge(order.statusPedido)}</td>
+                        <td class="action-cell">
+                            ${createStatusSelect(order.id, order.statusPedido)}
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            };
+
+            /**
+             * Atualiza o status de um pedido via API (PATCH)
+             */
+            const updateOrderStatus = async (orderId, newStatus) => {
+                try {
+                    const response = await fetch(`/admin/orders/${orderId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ statusPedido: newStatus }),
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(result.error || 'Erro ao atualizar status');
+                    }
+                    
+                    showToast(result.message || 'Status atualizado com sucesso!', 'success');
+                    // Recarrega a lista de pedidos com o filtro atual
+                    fetchOrders(currentStatusFilter); 
+
+                } catch (error) {
+                    console.error('Erro ao atualizar status:', error);
+                    showToast(`Erro: ${error.message}`, 'error');
+                }
+            };
+
+
+            // --- FUNÇÕES AUXILIARES ---
+
+            /**
+             * Formata a data (de '2025-11-16T19:30:00Z' para '16/11/2025 16:30')
+             */
+            const formatDate = (dateString) => {
+                const date = new Date(dateString);
+                return date.toLocaleString('pt-BR', { 
+                    day: '2-digit', 
+                    month: '2-digit', 
+                    year: 'numeric', 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            };
+
+            /**
+             * Cria um <select> para mudar o status
+             */
+            const createStatusSelect = (orderId, currentStatus) => {
+                // Não permite alterar pedidos já finalizados ou cancelados
+                if (currentStatus === 'Finalizado' || currentStatus === 'Cancelado') {
+                    return `<span>---</span>`;
+                }
+
+                const options = ['Recebido', 'Em Preparo', 'Pronto para Retirada', 'Finalizado'];
+                let selectHtml = `<select class="status-select" data-order-id="${orderId}">`;
+                
+                options.forEach(option => {
+                    const selected = (option === currentStatus) ? 'selected' : '';
+                    selectHtml += `<option value="${option}" ${selected}>${option}</option>`;
+                });
+                
+                selectHtml += `</select>`;
+                return selectHtml;
+            };
+
+            /**
+             * Cria um badge de status (HTML)
+             */
+            const createStatusBadge = (status) => {
+                const statusClass = status.toLowerCase()
+                                        .replace(' ', '-')
+                                        .replace('ã', 'a')
+                                        .replace('ç', 'c');
+                return `<span class="status-badge status-${statusClass}">${status}</span>`;
+            };
+
+            /**
+             * Mostra uma notificação toast
+             */
+            const showToast = (message, type = 'success') => {
+                const toast = document.getElementById('toast-notification');
+                toast.textContent = message;
+                toast.className = `toast show ${type}`;
+                setTimeout(() => {
+                    toast.className = toast.className.replace('show', '');
+                }, 3000);
+            };
+
+
+            // --- EVENT LISTENERS ---
+
+            /**
+             * Listener para a barra de filtro
+             */
+            filterBar.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    // Atualiza o filtro ativo
+                    currentStatusFilter = e.target.dataset.status;
+
+                    // Atualiza a classe 'active' nos botões
+                    filterBar.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    e.target.classList.add('active');
+
+                    // Busca os pedidos com o novo filtro
+                    fetchOrders(currentStatusFilter);
+                }
+            });
+
+            /**
+             * Listener para os <select> de mudança de status (Usando delegação de evento)
+             */
+            tableBody.addEventListener('change', (e) => {
+                if (e.target.classList.contains('status-select')) {
+                    const orderId = e.target.dataset.orderId;
+                    const newStatus = e.target.value;
+                    updateOrderStatus(orderId, newStatus);
+                }
+            });
+
+            // --- INICIALIZAÇÃO ---
+            fetchOrders(); // Busca todos os pedidos ao carregar a página
+        });
+    </script> -->
+
+</body>
+</html>

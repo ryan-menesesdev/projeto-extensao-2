@@ -1,5 +1,9 @@
+require('dotenv').config();
+
 const express = require('express');
+const authRouter = require('./app/routes/authRoutes')
 const renderRouter = require('./app/routes/renderRoutes');
+const adminRenderRouter = require('./app/routes/adminRenderRoutes');
 const clientRouter = require('./app/routes/clientRoutes');
 const adminRouter = require('./app/routes/adminRoutes');
 
@@ -12,7 +16,9 @@ app.set('views', './app/views');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(authRouter);
 app.use(renderRouter);
+app.use(adminRenderRouter);
 app.use(clientRouter);
 app.use(adminRouter);
 
