@@ -11,12 +11,12 @@
     <link rel="stylesheet" href="/css/item-display.css"> 
     <link rel="stylesheet" href="/css/footer.css">
     <link rel="stylesheet" href="/css/header.css">
-    <title>Detalhes do Produto - Sinhá Bolos e Lanches</title>
+    <title><%= product ? product.nome + ' - Sinhá Bolos e Lanches' : 'Detalhes do Produto - Sinhá Bolos e Lanches' %></title>
 </head>
 <body>
     <header>
         <div class="header-container">
-            <a href="index.html" class="header-link" aria-label="Página Inicial de Sinhá Bolos e Lanches">
+            <a href="/" class="header-link" aria-label="Página Inicial de Sinhá Bolos e Lanches">
                 <div class="header-left">
                     <img src="/images/logo-better-nobackground.png" alt="Logo da Sinhá Bolos e Lanches" class="header-logo">
                     <span class="header-logo-title">Sinhá Bolos e Lanches</span>
@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="header-cart-container">
-                    <a href="cart.html" aria-label="Ver carrinho de compras">
+                    <a href="/cart" aria-label="Ver carrinho de compras">
                         <i class="fas fa-shopping-cart header-icon" aria-hidden="true"></i>
                         <span id="cart-counter" class="header-cart-count">0</span>
                     </a>
@@ -50,11 +50,11 @@
                         Menu <i class="fas fa-chevron-down dropdown-arrow" aria-hidden="true"></i>
                     </button>
                     <div class="header-dropdown-menu" id="menuDropdown" role="menu">
-                        <a href="index.html" role="menuitem" aria-current="page">Início</a>
-                        <a href="orders.html" role="menuitem" aria-current="page">Meus pedidos</a>
-                        <a href="about.html" role="menuitem">Sobre</a>
-                        <a href="contact.html" role="menuitem">Contato</a>
-                        <a href="team.html" role="menuitem">Equipe</a>
+                        <a href="/" role="menuitem" aria-current="page">Início</a>
+                        <a href="/orders" role="menuitem" aria-current="page">Meus pedidos</a>
+                        <a href="/about" role="menuitem">Sobre</a>
+                        <a href="/contact" role="menuitem">Contato</a>
+                        <a href="/team" role="menuitem">Equipe</a>
                         <a href="#" id="auth-link-dropdown" role="menuitem">Sair</a>
                     </div>
                 </div>
@@ -63,19 +63,105 @@
     </header>
 
     <main>
+        <div class="top-container">
+            <a class="top-link" href="javascript:history.back()" aria-label="Voltar para a página inicial">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                <span>Voltar</span>
+            </a>
+        </div>
         <div class="item-display-main-container">
-            <div class="top-container">
-                <a class="top-link" href="/" aria-label="Voltar para a página de categoria">
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                    <span>Voltar</span>
-                </a>
-            </div>
-            
-            <article class="item-display-section" id="product-detail-container" aria-live="polite">
-                <div class="loading-indicator">
-                    <h1>Carregando informações do produto...</h1>
-                </div>
-            </article>
+            <% if (product) { %>
+                <article class="item-display-section" id="product-detail-container" aria-live="polite" aria-labelledby="product-title">
+                    <div class="item-display-image-container">
+                        <img 
+                            class="item-display-image" 
+                            src="<%= product.imagem || '/images/avatar_placeholder.png' %>" 
+                            alt="<%= product.nome %>"
+                        >
+                    </div>
+
+                    <div class="item-display-info-container">
+                        <h1 class="item-display-title" id="product-title"><%= product.nome %></h1>
+                        
+                        <p class="item-display-category">
+                            <strong>Categoria:</strong> 
+                            <span class="category-badge"><%= product.categoria %></span>
+                        </p>
+
+                        <p class="item-display-description">
+                            <strong>Descrição:</strong> 
+                            <%= product.descricao %>
+                        </p>
+
+                        <div class="item-display-price-container">
+                            <p class="item-display-price" aria-label="Preço do produto">
+                                <strong>Preço:</strong> 
+                                <span class="price-value">
+                                    <%= parseFloat(product.preco).toLocaleString('pt-BR', { 
+                                        style: 'currency', 
+                                        currency: 'BRL' 
+                                    }) %>
+                                </span>
+                            </p>
+                        </div>
+
+                        <div class="item-display-availability">
+                            <p class="item-display-availability-status">
+                                <strong>Disponibilidade:</strong> 
+                                <span class="<%= product.disponivel ? 'availability-available' : 'availability-unavailable' %>">
+                                    <%= product.disponivel ? '✓ Disponível' : '✗ Indisponível' %>
+                                </span>
+                            </p>
+                        </div>
+
+                        <% if (product.disponivel) { %>
+                            <div class="item-display-actions">
+                                <button 
+                                    class="item-display-button add-to-cart-btn" 
+                                    id="add-to-cart-btn"
+                                    data-product-id="<%= product.id %>"
+                                    aria-label="Adicionar <%= product.nome %> ao carrinho"
+                                >
+                                    <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                                    Adicionar ao Carrinho
+                                </button>
+                            </div>
+                        <% } else { %>
+                            <div class="item-display-actions">
+                                <button 
+                                    class="item-display-button unavailable-btn" 
+                                    disabled
+                                    aria-label="Produto indisponível"
+                                >
+                                    <i class="fas fa-ban" aria-hidden="true"></i>
+                                    Indisponível
+                                </button>
+                            </div>
+                        <% } %>
+
+                        <div class="item-display-info">
+                            <p class="item-display-info-text">
+                                <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                Para adicionar este produto ao carrinho, você deve estar logado em sua conta.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            <% } else { %>
+                <article class="item-display-section" id="product-detail-container" aria-live="polite">
+                    <div class="error-container">
+                        <div class="error-icon">
+                            <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                        </div>
+                        <h1 class="error-title">Produto não encontrado</h1>
+                        <p class="error-message">Desculpe, o produto que você está procurando não está disponível.</p>
+                        <a href="/" class="error-link-button">
+                            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                            Voltar à página inicial
+                        </a>
+                    </div>
+                </article>
+            <% } %>
         </div>
     </main>
 
@@ -85,16 +171,15 @@
             <p class="footer-text">Horário de funcionamento: 10h - 18h</p>
             <nav aria-label="Navegação do rodapé">
                 <p class="footer-text">
-                    <a class="footer-link" href="index.html">Início</a> | 
-                    <a class="footer-link" href="about.html">Sobre</a> | 
-                    <a class="footer-link" href="contact.html">Contato</a> | 
-                    <a class="footer-link" href="team.html">Equipe</a>
+                    <a class="footer-link" href="/">Início</a> | 
+                    <a class="footer-link" href="/about">Sobre</a> | 
+                    <a class="footer-link" href="/contact">Contato</a> | 
+                    <a class="footer-link" href="/team">Equipe</a>
                 </p>
             </nav>
         </div>
     </footer>
 
-    <script src="/js/dropdown.js"></script>
-    <script src="/js/main.js" type="module"></script>
+    <script src="/js/utility.js" type="module"></script>
 </body>
 </html>

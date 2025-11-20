@@ -1,11 +1,13 @@
 require('dotenv').config();
 
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const authRouter = require('./app/routes/authRoutes')
 const renderRouter = require('./app/routes/renderRoutes');
 const adminRenderRouter = require('./app/routes/adminRenderRoutes');
 const clientRouter = require('./app/routes/clientRoutes');
 const adminRouter = require('./app/routes/adminRoutes');
+const authDataMiddleware = require('./app/middlewares/authData');
 
 const app = express();
 
@@ -13,8 +15,11 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 app.set('views', './app/views');
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(authDataMiddleware);
 
 app.use(authRouter);
 app.use(renderRouter);

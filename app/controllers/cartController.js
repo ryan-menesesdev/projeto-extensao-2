@@ -3,7 +3,7 @@ const { getCartItemsByUserId, addOrUpdateProductInCart, updateItemQuantityInCart
 
 module.exports = {
     getCart: (req, res) => {
-        const { userId } = req.query;
+        const userId = req.user.id;
 
         if(!userId) {
             return res.status(400).json({ error: "Não existe nenhum Usuário vinculado a esse carrinho" });
@@ -19,7 +19,7 @@ module.exports = {
                 return res.status(500).json({ error: "Erro interno do servidor." });
             }
 
-            res.status(200).json({ cart: result });
+            res.status(200).render('client/cart', { cart: result });
         });
     },
     addProductToCart: (req, res) => {

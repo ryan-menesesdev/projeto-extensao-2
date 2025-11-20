@@ -20,11 +20,11 @@ renderRouter.get('/team', (req, res) => {
 });
 
 renderRouter.get('/login', (req, res) => {
-    res.render('client/login');
+    res.render('login');
 });
 
 renderRouter.get('/register', (req, res) => {
-    res.render('client/register');
+    res.render('register');
 });
 
 module.exports = renderRouter;

@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="header-cart-container">
-                    <a href="cart.html" aria-label="Ver carrinho de compras">
+                    <a href="/cart" aria-label="Ver carrinho de compras">
                         <i class="fas fa-shopping-cart header-icon" aria-hidden="true"></i>
                         <span id="cart-counter" class="header-cart-count">0</span>
                     </a>
@@ -50,11 +50,11 @@
                         Menu <i class="fas fa-chevron-down dropdown-arrow" aria-hidden="true"></i>
                     </button>
                     <div class="header-dropdown-menu" id="menuDropdown" role="menu">
-                        <a href="index.html" role="menuitem" aria-current="page">Início</a>
-                        <a href="orders.html" role="menuitem" aria-current="page">Meus pedidos</a>
-                        <a href="about.html" role="menuitem">Sobre</a>
-                        <a href="contact.html" role="menuitem">Contato</a>
-                        <a href="team.html" role="menuitem">Equipe</a>
+                        <a href="/" role="menuitem" aria-current="page">Início</a>
+                        <a href="/orders" role="menuitem" aria-current="page">Meus pedidos</a>
+                        <a href="/about" role="menuitem">Sobre</a>
+                        <a href="/contact" role="menuitem">Contato</a>
+                        <a href="/team" role="menuitem">Equipe</a>
                         <a href="#" id="auth-link-dropdown" role="menuitem">Sair</a>
                     </div>
                 </div>
@@ -64,19 +64,81 @@
 
     <main>
             <div class="top-container">
-                <a class="top-link" href="/" aria-label="Voltar para a página inicial">
+                <a class="top-link" href="javascript:history.back()" aria-label="Voltar para a página inicial">
                     <i class="fas fa-arrow-left" aria-hidden="true"></i>
                     <span>Voltar</span>
                 </a>
             </div>
             <section class="orders-section" aria-labelledby="orders-main-title">
-                <h1 class="orders-section-title" id="orders-main-title">Meus pedidos</h1>
-                
+            <h1 class="orders-section-title" id="orders-main-title">Meus pedidos</h1>
+            
+            <% if (orders && orders.length > 0) { %>
                 <div class="orders-container" id="orders-list-container">
-                    <p>Carregando seus pedidos...</p>
+                    <% orders.forEach(order => {
+                        const dataPedido = new Date(order.criadoEm).toLocaleDateString('pt-BR', {
+                            day: '2-digit',
+                            month: 'long',
+                            year: 'numeric'
+                        });
+                        
+                        // Calcula o valor total dos produtos do pedido
+                        const valorTotal = order.products ? 
+                            order.products.reduce((total, produto) => total + (produto.preco * produto.quantidade), 0) : 0;
+                        
+                        const statusClass = `status--${order.statusPedido.toLowerCase().replace(/\s+/g, '-')}`;
+                    %>
+                        <article class="order-card" aria-labelledby="order-id-<%= order.id %>">
+                            <header class="order-card-header">
+                                <h2 class="order-card-subtitle" id="order-id-<%= order.id %>">Pedido: #<%= String(order.id).toUpperCase() %></h2>
+                                <p class="order-card-status <%= statusClass %>"><%= order.statusPedido %></p>
+                            </header>
+
+                            <div class="order-card-body">
+                                <div class="order-card-details">
+                                    <p class="order-card-text">
+                                        <strong>Data:</strong> 
+                                        <%= dataPedido %>
+                                    </p>
+                                    
+                                    <p class="order-card-text">
+                                        <strong>Valor Total:</strong> 
+                                        <%= valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %>
+                                    </p>
+                                    
+                                    <p class="order-card-text">
+                                        <strong>Pagamento:</strong> 
+                                        <%= order.metodoPagamento %>
+                                    </p>
+                                    
+                                    <p class="order-card-text">
+                                        <strong>Status do Pagamento:</strong> 
+                                        <%= order.statusPagamento %>
+                                    </p>
+                                </div>
+
+                                <% if (order.products && order.products.length > 0) { %>
+                                    <div class="order-card-items">
+                                        <h3 class="order-card-items-subtitle">Itens do Pedido:</h3>
+                                        <ul class="order-card-items-list">
+                                            <% order.products.forEach(produto => { %>
+                                                <li class="order-card-items-item">
+                                                    <%= produto.nome %> (x<%= produto.quantidade %>) - 
+                                                    <%= (produto.preco * produto.quantidade).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %>
+                                                </li>
+                                            <% }); %>
+                                        </ul>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </article>
+                    <% }); %>
                 </div>
-                
-            </section>
+            <% } else { %>
+                <div class="orders-container" id="orders-list-container">
+                    <p>Você ainda não fez nenhum pedido.</p>
+                </div>
+            <% } %>
+        </section>
         </div>
     </main>
 
@@ -86,16 +148,15 @@
             <p class="footer-text">Horário de funcionamento: 10h - 18h</p>
             <nav aria-label="Navegação do rodapé">
                 <p class="footer-text">
-                    <a class="footer-link" href="index.html">Início</a> | 
-                    <a class="footer-link" href="about.html">Sobre</a> | 
-                    <a class="footer-link" href="contact.html">Contato</a> | 
-                    <a class="footer-link" href="team.html">Equipe</a>
+                    <a class="footer-link" href="/">Início</a> | 
+                    <a class="footer-link" href="/about">Sobre</a> | 
+                    <a class="footer-link" href="/contact">Contato</a> | 
+                    <a class="footer-link" href="/team">Equipe</a>
                 </p>
             </nav>
         </div>
     </footer>
 
-    <script src="/js/dropdown.js"></script>
-    <script src="/js/main.js" type="module"></script>
+    <script src="/js/utility.js" type="module"></script>
 </body>
 </html>

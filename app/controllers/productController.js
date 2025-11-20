@@ -39,7 +39,7 @@ module.exports = {
                 return res.status(400).json({ message: "Produto não encontrado." });
             }
 
-            res.status(200).json({ product: result[0] });
+            res.status(200).render('client/product-display', { product: result[0] });
         });
     },
     alterProductAvailability: (req, res) => {

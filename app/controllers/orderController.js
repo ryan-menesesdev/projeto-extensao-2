@@ -5,7 +5,9 @@ const { getOrdersByUserId, getOrderById } = require("../models/orderModel");
 
 module.exports = {
     listOrders: (req, res) => {
-        const { userId, status } = req.query;
+        const { status } = req.query;
+
+        const userId = req.user.id;
 
         if (!userId) {
             return res.status(400).json({ error: "Não foi encontrado usuário vinculado." });
@@ -21,7 +23,7 @@ module.exports = {
                 return res.status(500).json({ error: "Erro interno do servidor." });
             }
 
-            res.status(200).json({ orders: result });
+            res.status(200).render('client/orders', { orders: result });
         });
     },
     getOrderById: (req, res) => {

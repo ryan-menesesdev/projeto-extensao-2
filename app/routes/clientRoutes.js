@@ -23,6 +23,7 @@ const {
     listProducts, 
     getProductById, 
 } = require('../controllers/productController');
+const isAuth = require('../middlewares/isAuth');
 
 // ROTAS PÚBLICAS (CLIENTE) 
 
@@ -41,29 +42,29 @@ clientRouter.get('/products/:id', getProductById);
 // - Order
 
 // REQUISIÇÃO -> /orders?userId=1 
-clientRouter.get('/orders', listOrders);
+clientRouter.get('/orders', isAuth, listOrders);
 
 // REQUISIÇÃO -> /orders/1?userId=1
-clientRouter.get('/orders/:id', getOrderById);
+clientRouter.get('/orders/:id', isAuth, getOrderById);
 
 // ------------------------------------------------------------------------------------------------------------
 
 // - Cart
 
 // REQUISIÇÃO -> /cart?userId=1
-clientRouter.get('/cart', getCart);
+clientRouter.get('/cart', isAuth, getCart);
 
 // REQUISIÇÃO -> /cart/add
 // Body: { "userId": 1, "productId": 3 }
-clientRouter.post('/cart/add', addProductToCart);
+clientRouter.post('/cart/add', isAuth, addProductToCart);
 
 // REQUISIÇÃO -> PUT /cart/products/1 
 // Body: { "userId": 1, "quantity": 3 }
-clientRouter.put('/cart/products/:productId', updateCartItemQuantity);
+clientRouter.put('/cart/products/:productId', isAuth, updateCartItemQuantity);
 
 // REQUISIÇÃO -> DELETE /cart/products/1 
 // Body: { "userId": 1 }
-clientRouter.delete('/cart/products/:productId', removeCartItem);
+clientRouter.delete('/cart/products/:productId', isAuth, removeCartItem);
 
 // ------------------------------------------------------------------------------------------------------------
 
@@ -71,7 +72,7 @@ clientRouter.delete('/cart/products/:productId', removeCartItem);
 
 // REQUISIÇÃO -> POST /payment
 // Body: { "userId": 1, "metodoPagamento": "pix" }
-clientRouter.post('/payment', finalizeCheckout);
+clientRouter.post('/payment', isAuth, finalizeCheckout);
 
 module.exports = clientRouter;
 

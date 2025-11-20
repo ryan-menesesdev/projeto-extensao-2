@@ -17,7 +17,7 @@
 <body>
     <header>
         <div class="header-container">
-            <a href="index.html" class="header-link" aria-label="Página Inicial de Sinhá Bolos e Lanches">
+            <a href="/" class="header-link" aria-label="Página Inicial de Sinhá Bolos e Lanches">
                 <div class="header-left">
                     <img src="/images/logo-better-nobackground.png" alt="Logo da Sinhá Bolos e Lanches" class="header-logo">
                     <span class="header-logo-title">Sinhá Bolos e Lanches</span>
@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="header-cart-container">
-                    <a href="cart.html" aria-label="Ver carrinho de compras">
+                    <a href="/cart" aria-label="Ver carrinho de compras">
                         <i class="fas fa-shopping-cart header-icon" aria-hidden="true"></i>
                         <span id="cart-counter" class="header-cart-count">0</span>
                     </a>
@@ -51,12 +51,23 @@
                         Menu <i class="fas fa-chevron-down dropdown-arrow" aria-hidden="true"></i>
                     </button>
                     <div class="header-dropdown-menu" id="menuDropdown" role="menu">
-                        <a href="index.html" role="menuitem" aria-current="page">Início</a>
-                        <a href="orders.html" role="menuitem" aria-current="page">Meus pedidos</a>
-                        <a href="about.html" role="menuitem">Sobre</a>
-                        <a href="contact.html" role="menuitem">Contato</a>
-                        <a href="team.html" role="menuitem">Equipe</a>
-                        <a href="#" id="auth-link-dropdown" role="menuitem">Sair</a>
+                        <a href="/" role="menuitem" aria-current="page">Início</a>
+                        <a href="/orders" role="menuitem" aria-current="page">Meus pedidos</a>
+                        <a href="/about" role="menuitem">Sobre</a>
+                        <a href="/contact" role="menuitem">Contato</a>
+                        <a href="/team" role="menuitem">Equipe</a>
+                        
+                        <% if (isAuthenticated) { %>
+                            <a href="/logout" id="auth-link-dropdown" role="menuitem" aria-label="Fazer logout">
+                                <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                                Sair (<%= user.nome %>)
+                            </a>
+                        <% } else { %>
+                            <a href="/login" id="auth-link-dropdown" role="menuitem" aria-label="Fazer login">
+                                <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                                Login
+                            </a>
+                        <% } %>
                     </div>
                 </div>
             </nav>
@@ -129,9 +140,9 @@
             <nav aria-label="Navegação do rodapé">
                 <p class="footer-text">
                     <a class="footer-link" href="/">Início</a> | 
-                    <a class="footer-link" href="about">Sobre</a> | 
-                    <a class="footer-link" href="contact">Contato</a> | 
-                    <a class="footer-link" href="team">Equipe</a>
+                    <a class="footer-link" href="/about">Sobre</a> | 
+                    <a class="footer-link" href="/contact">Contato</a> | 
+                    <a class="footer-link" href="/team">Equipe</a>
                 </p>
             </nav>
         </div>

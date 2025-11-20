@@ -16,7 +16,7 @@
     <body>
         <header>
             <div class="header-container">
-                <a href="index.html" class="header-link" aria-label="Página Inicial de Sinhá Bolos e Lanches">
+                <a href="/" class="header-link" aria-label="Página Inicial de Sinhá Bolos e Lanches">
                     <div class="header-left">
                             <img src="/images/logo-better-nobackground.png" alt="Logo da Sinhá Bolos e Lanches" class="header-logo">
                             <span class="header-logo-title">Sinhá Bolos e Lanches</span>
@@ -40,7 +40,7 @@
                     </div>
 
                     <div class="header-cart-container">
-                        <a href="cart.html" aria-label="Ver carrinho de compras">
+                        <a href="/cart" aria-label="Ver carrinho de compras">
                             <i class="fas fa-shopping-cart header-icon" aria-hidden="true"></i>
                             <span id="cart-counter" class="header-cart-count">0</span>
                         </a>
@@ -50,11 +50,11 @@
                             Menu <i class="fas fa-chevron-down dropdown-arrow" aria-hidden="true"></i>
                         </button>
                         <div class="header-dropdown-menu" id="menuDropdown" role="menu">
-                            <a href="index.html" role="menuitem" aria-current="page">Início</a>
-                            <a href="orders.html" role="menuitem" aria-current="page">Meus pedidos</a>
-                            <a href="about.html" role="menuitem">Sobre</a>
-                            <a href="contact.html" role="menuitem">Contato</a>
-                            <a href="team.html" role="menuitem">Equipe</a>
+                            <a href="/" role="menuitem" aria-current="page">Início</a>
+                            <a href="/orders" role="menuitem" aria-current="page">Meus pedidos</a>
+                            <a href="/about" role="menuitem">Sobre</a>
+                            <a href="/contact" role="menuitem">Contato</a>
+                            <a href="/team" role="menuitem">Equipe</a>
                             <a href="#" id="auth-link-dropdown" role="menuitem">Sair</a>
                         </div>
                     </div>
@@ -64,7 +64,7 @@
 
         <main>
             <div class="top-container">
-                <a class="top-link" href="/" aria-label="Voltar para a página inicial">
+                <a class="top-link" href="javascript:history.back()" aria-label="Voltar para a página inicial">
                     <i class="fas fa-arrow-left" aria-hidden="true"></i>
                     <span>Voltar</span>
                 </a>
@@ -73,29 +73,66 @@
             <section class="cart-section" aria-labelledby="cart-main-title">
                 <h1 class="cart-section-title" id="cart-main-title">Carrinho</h1>
 
-                <ul class="cart-section-container" id="cart-items-list">
-                    <li><p>Carregando seu carrinho...</p></li>
-                </ul>
+                <% if (cart && cart.length > 0) { %>
+                    <ul class="cart-section-container" id="cart-items-list">
+                        <% cart.forEach(item => { 
+                            const itemTotal = item.preco * item.quantidade;
+                        %>
+                            <li class="cart-item" data-product-id="<%= item.id %>">
+                                <div class="cart-section-img-container">
+                                    <img class="cart-section-img" src="<%= item.imagem || '/images/avatar_placeholder.png' %>" alt="<%= item.nome %>">
+                                    <h2 class="cart-section-name"><%= item.nome %></h2>
+                                </div>
+                                <div class="cart-section-quantity-container">
+                                    <button class="cart-section-button decrease-qty" data-id="<%= item.id %>" aria-label="Diminuir quantidade de <%= item.nome %>">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <p class="cart-section-quantity" aria-label="Quantidade de <%= item.nome %>"><%= item.quantidade %></p>
+                                    <button class="cart-section-button increase-qty" data-id="<%= item.id %>" aria-label="Aumentar quantidade de <%= item.nome %>">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="cart-section-price-container">
+                                    <p class="cart-section-price">Preço: <%= itemTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></p>
+                                </div>
+                                <div class="cart-section-trash-container">
+                                    <button class="cart-section-button delete-item" data-id="<%= item.id %>" aria-label="Remover <%= item.nome %> do carrinho">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </li>
+                        <% }); %>
+                    </ul>
 
-                <div class="cart-section-total-container" aria-live="polite">
-                    <h2 class="cart-section-total" id="cart-total-price">Total: R$ 0,00</h2>
-                </div>
-
-                <div class="cart-section-payment">
-                    <div class="cart-section-select-container">
-                        <label for="payment-method" class="cart-section-select-label">*Forma de Pagamento:</label>
-                        <select class="cart-section-select" id="payment-method">
-                            <option value="" selected disabled>*Selecione a forma de pagamento</option>
-                            <option value="Pix">Pix</option>
-                            <option value="Dinheiro">Dinheiro</option>
-                        </select>
+                    <div class="cart-section-total-container" aria-live="polite">
+                        <h2 class="cart-section-total" id="cart-total-price">
+                            Total: <%= (cart.reduce((total, item) => total + (item.preco * item.quantidade), 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %>
+                        </h2>
                     </div>
 
-                    <div class="cart-section-button-container">
-                        <button class="cart-section-button-payment" id="checkout-button">Finalizar compra</button>
+                    <div class="cart-section-payment">
+                        <div class="cart-section-select-container">
+                            <label for="payment-method" class="cart-section-select-label">*Forma de Pagamento:</label>
+                            <select class="cart-section-select" id="payment-method">
+                                <option value="" selected disabled>*Selecione a forma de pagamento</option>
+                                <option value="Pix">Pix</option>
+                                <option value="Dinheiro">Dinheiro</option>
+                            </select>
+                        </div>
+
+                        <div class="cart-section-button-container">
+                            <button class="cart-section-button-payment" id="checkout-button">Finalizar compra</button>
+                        </div>
                     </div>
-                    
-                </div>
+                <% } else { %>
+                    <ul class="cart-section-container" id="cart-items-list">
+                        <li><p>Seu carrinho está vazio.</p></li>
+                    </ul>
+
+                    <div class="cart-section-total-container" aria-live="polite">
+                        <h2 class="cart-section-total" id="cart-total-price">Total: R$ 0,00</h2>
+                    </div>
+                <% } %>
             </section>
         </main>
 
@@ -104,15 +141,15 @@
                 <p class="footer-text">©2025 Sinhá Bolos e Lanches. Todos os direitos reservados.</p>
                 <p class="footer-text">Horário de funcionamento: 10h - 18h</p>
                 <p class="footer-text">
-                    <a class="footer-link" href="index.html">Início</a> | 
-                    <a class="footer-link" href="about.html">Sobre</a> | 
-                    <a class="footer-link" href="contact.html">Contato</a> | 
-                    <a class="footer-link" href="team.html">Equipe</a></p>
+                    <a class="footer-link" href="/">Início</a> | 
+                    <a class="footer-link" href="/about">Sobre</a> | 
+                    <a class="footer-link" href="/contact">Contato</a> | 
+                    <a class="footer-link" href="/team">Equipe</a>
             </div>
         </footer>
 
-        <script src="/js/dropdown.js"></script>
-        <script src="/js/main.js" type="module"></script>
+        <script src="/js/utility.js" type="module"></script>
+
         <div id="confirmation-modal" class="modal-overlay">
             <div class="modal-content">
                 <h2 id="modal-title">Título da Confirmação</h2>

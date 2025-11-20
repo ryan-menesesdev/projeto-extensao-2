@@ -5,7 +5,7 @@
     <meta name="description" content="Seu pedido na Sinhá Bolos e Lanches foi confirmado! Veja os próximos passos para a retirada do seu pedido.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="icon" type="image/png" href="../assets/logo-better-nobackground.png">
+    <link rel="icon" type="image/png" href="/images/logo-better-nobackground.png">
     <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/back.css">
     <link rel="stylesheet" href="/css/payment.css"> 
@@ -16,7 +16,7 @@
 <body>
     <header>
         <div class="header-container">
-            <a href="index.html" class="header-link" aria-label="Página Inicial de Sinhá Bolos e Lanches">
+            <a href="/" class="header-link" aria-label="Página Inicial de Sinhá Bolos e Lanches">
                 <div class="header-left">
                     <img src="/images/logo-better-nobackground.png" alt="Logo da Sinhá Bolos e Lanches" class="header-logo">
                     <span class="header-logo-title">Sinhá Bolos e Lanches</span>
@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="header-cart-container">
-                    <a href="cart.html" aria-label="Ver carrinho de compras">
+                    <a href="/cart" aria-label="Ver carrinho de compras">
                         <i class="fas fa-shopping-cart header-icon" aria-hidden="true"></i>
                         <span id="cart-counter" class="header-cart-count">0</span>
                     </a>
@@ -50,11 +50,11 @@
                         Menu <i class="fas fa-chevron-down dropdown-arrow" aria-hidden="true"></i>
                     </button>
                     <div class="header-dropdown-menu" id="menuDropdown" role="menu">
-                        <a href="index.html" role="menuitem" aria-current="page">Início</a>
-                        <a href="orders.html" role="menuitem" aria-current="page">Meus pedidos</a>
-                        <a href="about.html" role="menuitem">Sobre</a>
-                        <a href="contact.html" role="menuitem">Contato</a>
-                        <a href="team.html" role="menuitem">Equipe</a>
+                        <a href="/" role="menuitem" aria-current="page">Início</a>
+                        <a href="/orders" role="menuitem" aria-current="page">Meus pedidos</a>
+                        <a href="/about" role="menuitem">Sobre</a>
+                        <a href="/contact" role="menuitem">Contato</a>
+                        <a href="/team" role="menuitem">Equipe</a>
                         <a href="#" id="auth-link-dropdown" role="menuitem">Sair</a>
                     </div>
                 </div>
@@ -95,16 +95,15 @@
             <p class="footer-text">Horário de funcionamento: 10h - 18h</p>
             <nav aria-label="Navegação do rodapé">
                 <p class="footer-text">
-                    <a class="footer-link" href="index.html">Início</a> | 
-                    <a class="footer-link" href="about.html">Sobre</a> | 
-                    <a class="footer-link" href="contact.html">Contato</a> | 
-                    <a class="footer-link" href="team.html">Equipe</a>
+                    <a class="footer-link" href="/">Início</a> | 
+                    <a class="footer-link" href="/about">Sobre</a> | 
+                    <a class="footer-link" href="/contact">Contato</a> | 
+                    <a class="footer-link" href="/team">Equipe</a>
                 </p>
             </nav>
         </div>
     </footer>
 
-    <script src="/js/dropdown.js"></script>
-    <script src="/js/main.js" type="module"></script>
+    <script src="/js/utility.js" type="module"></script>
 </body>
 </html>
