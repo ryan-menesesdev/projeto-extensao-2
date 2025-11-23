@@ -56,7 +56,8 @@ module.exports = {
                     code: 200,
                     message: 'Autenticação bem-sucedida.',
                     token,
-                    data: { user: safeUser },
+                    user: { safeUser },
+                    isAuthenticated: true,
                 });
             } catch (e) {
                 console.error('[Auth Error]', e);
@@ -69,7 +70,7 @@ module.exports = {
 
         res.clearCookie('authToken');
 
-        return res.redirect('/login');
+        return res.redirect('/');
     },
     register: async (req, res) => {
         const { cpf, nome, senha, telefone, email } = req.body;

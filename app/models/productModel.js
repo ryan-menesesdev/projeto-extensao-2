@@ -2,12 +2,12 @@ module.exports = {
     getAllProducts: (db, categoria, callback) => {
         console.log('LER PRODUTOS do banco de dados');
 
-        let sql = 'SELECT * FROM produto WHERE disponivel = TRUE';
+        let sql = 'SELECT * FROM produto';
 
         const params = [];
 
         if(categoria) {
-            sql += ' AND categoria = ?';
+            sql += ' WHERE categoria = ?';
             params.push(categoria);
         }
 

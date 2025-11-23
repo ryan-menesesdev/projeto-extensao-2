@@ -28,7 +28,8 @@ module.exports = {
     },
     getOrderById: (req, res) => {
         const { id } = req.params;
-        const { userId } = req.query;
+
+        const userId = req.user.id;
 
         if(!userId) {
             return res.status(400).json({ error: "Nenhum usuário foi encontrado sobre esse pedido" });
@@ -48,7 +49,10 @@ module.exports = {
                 return res.status(400).json({ message: "Pedido não encontrado ou não pertence a este usuário." });
             }
             
-            res.status(200).json({ order: result });
+            res.status(200).render('client/order-display', { 
+                order: result.details, 
+                products: result.products 
+            });
         });
     },
 

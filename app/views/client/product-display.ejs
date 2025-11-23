@@ -5,62 +5,16 @@
     <meta name="description" content="Veja os detalhes dos nossos produtos, incluindo descrição e preço, na Sinhá Bolos e Lanches.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="icon" type="image/png" href="../assets/logo-better-nobackground.png">
+    <link rel="icon" type="image/png" href="/images/logo-better-nobackground.png">
     <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/back.css">
     <link rel="stylesheet" href="/css/item-display.css"> 
     <link rel="stylesheet" href="/css/footer.css">
     <link rel="stylesheet" href="/css/header.css">
-    <title><%= product ? product.nome + ' - Sinhá Bolos e Lanches' : 'Detalhes do Produto - Sinhá Bolos e Lanches' %></title>
+    <title><%= product ? product.nome : 'Detalhes do Produto' %></title>
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <a href="/" class="header-link" aria-label="Página Inicial de Sinhá Bolos e Lanches">
-                <div class="header-left">
-                    <img src="/images/logo-better-nobackground.png" alt="Logo da Sinhá Bolos e Lanches" class="header-logo">
-                    <span class="header-logo-title">Sinhá Bolos e Lanches</span>
-                </div>
-            </a>
-            <nav class="header-right" aria-label="Navegação principal">
-                <div class="header-accessibility-container">
-                    <button id="header-accessibility-toggle-btn" class="header-dropdown" aria-label="Abrir menu de acessibilidade" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-universal-access" aria-hidden="true"></i>
-                    </button>
-                    <div id="header-accessibility-menu" class="header-accessibility-menu">
-                        <div class="header-acessibility-content">
-                            <label for="font-size-control" class="header-acessibility-label">Tamanho da Fonte</label>
-                            <div id="font-size-control" class="header-acessibility-btn-container">
-                                <button id="font-decrease-btn" class="header-acessibility-btn" aria-label="Diminuir fonte">A-</button>
-                                <button id="font-reset-btn" class="header-acessibility-btn" aria-label="Resetar fonte">A</button>
-                                <button id="font-increase-btn" class="header-acessibility-btn" aria-label="Aumentar fonte">A+</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="header-cart-container">
-                    <a href="/cart" aria-label="Ver carrinho de compras">
-                        <i class="fas fa-shopping-cart header-icon" aria-hidden="true"></i>
-                        <span id="cart-counter" class="header-cart-count">0</span>
-                    </a>
-                </div>
-                <div class="header-dropdown-container">
-                    <button class="header-dropdown" id="menuDropdownToggle" aria-haspopup="true" aria-expanded="false" aria-controls="menuDropdown">
-                        Menu <i class="fas fa-chevron-down dropdown-arrow" aria-hidden="true"></i>
-                    </button>
-                    <div class="header-dropdown-menu" id="menuDropdown" role="menu">
-                        <a href="/" role="menuitem" aria-current="page">Início</a>
-                        <a href="/orders" role="menuitem" aria-current="page">Meus pedidos</a>
-                        <a href="/about" role="menuitem">Sobre</a>
-                        <a href="/contact" role="menuitem">Contato</a>
-                        <a href="/team" role="menuitem">Equipe</a>
-                        <a href="#" id="auth-link-dropdown" role="menuitem">Sair</a>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <%- include('../partials/header') %>
 
     <main>
         <div class="top-container">
@@ -116,15 +70,17 @@
 
                         <% if (product.disponivel) { %>
                             <div class="item-display-actions">
-                                <button 
-                                    class="item-display-button add-to-cart-btn" 
-                                    id="add-to-cart-btn"
-                                    data-product-id="<%= product.id %>"
-                                    aria-label="Adicionar <%= product.nome %> ao carrinho"
-                                >
-                                    <i class="fas fa-shopping-cart" aria-hidden="true"></i>
-                                    Adicionar ao Carrinho
-                                </button>
+                                <form action="/cart/add" method="post">
+                                    <input type="hidden" name="productId" value="<%= product.id %>">
+                                    <button 
+                                        class="item-display-button" 
+                                        data-product-id="<%= product.id %>"
+                                        aria-label="Adicionar <%= product.nome %> ao carrinho"
+                                    >
+                                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                                        Adicionar ao Carrinho
+                                    </button>
+                                </form>
                             </div>
                         <% } else { %>
                             <div class="item-display-actions">
@@ -165,20 +121,7 @@
         </div>
     </main>
 
-    <footer>
-        <div class="footer-container">
-            <p class="footer-text">©2025 Sinhá Bolos e Lanches. Todos os direitos reservados.</p>
-            <p class="footer-text">Horário de funcionamento: 10h - 18h</p>
-            <nav aria-label="Navegação do rodapé">
-                <p class="footer-text">
-                    <a class="footer-link" href="/">Início</a> | 
-                    <a class="footer-link" href="/about">Sobre</a> | 
-                    <a class="footer-link" href="/contact">Contato</a> | 
-                    <a class="footer-link" href="/team">Equipe</a>
-                </p>
-            </nav>
-        </div>
-    </footer>
+    <%- include('../partials/footer') %>
 
     <script src="/js/utility.js" type="module"></script>
 </body>

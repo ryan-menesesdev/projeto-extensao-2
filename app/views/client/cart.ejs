@@ -14,57 +14,11 @@
         <title>Carrinho de Compras - Sinhá Bolos e Lanches</title>
     </head>
     <body>
-        <header>
-            <div class="header-container">
-                <a href="/" class="header-link" aria-label="Página Inicial de Sinhá Bolos e Lanches">
-                    <div class="header-left">
-                            <img src="/images/logo-better-nobackground.png" alt="Logo da Sinhá Bolos e Lanches" class="header-logo">
-                            <span class="header-logo-title">Sinhá Bolos e Lanches</span>
-                    </div>
-                </a>
-                <nav class="header-right" aria-label="Navegação principal">
-                    <div class="header-accessibility-container">
-                        <button id="header-accessibility-toggle-btn" class="header-dropdown" aria-label="Abrir menu de acessibilidade" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-universal-access" aria-hidden="true"></i>
-                        </button>
-                        <div id="header-accessibility-menu" class="header-accessibility-menu">
-                            <div class="header-acessibility-content">
-                                <label for="font-size-control" class="header-acessibility-label">Tamanho da Fonte</label>
-                                <div id="font-size-control" class="header-acessibility-btn-container">
-                                    <button id="font-decrease-btn" class="header-acessibility-btn" aria-label="Diminuir fonte">A-</button>
-                                    <button id="font-reset-btn" class="header-acessibility-btn" aria-label="Resetar fonte">A</button>
-                                    <button id="font-increase-btn" class="header-acessibility-btn" aria-label="Aumentar fonte">A+</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="header-cart-container">
-                        <a href="/cart" aria-label="Ver carrinho de compras">
-                            <i class="fas fa-shopping-cart header-icon" aria-hidden="true"></i>
-                            <span id="cart-counter" class="header-cart-count">0</span>
-                        </a>
-                    </div>
-                    <div class="header-dropdown-container">
-                        <button class="header-dropdown" id="menuDropdownToggle" aria-haspopup="true" aria-expanded="false" aria-controls="menuDropdown">
-                            Menu <i class="fas fa-chevron-down dropdown-arrow" aria-hidden="true"></i>
-                        </button>
-                        <div class="header-dropdown-menu" id="menuDropdown" role="menu">
-                            <a href="/" role="menuitem" aria-current="page">Início</a>
-                            <a href="/orders" role="menuitem" aria-current="page">Meus pedidos</a>
-                            <a href="/about" role="menuitem">Sobre</a>
-                            <a href="/contact" role="menuitem">Contato</a>
-                            <a href="/team" role="menuitem">Equipe</a>
-                            <a href="#" id="auth-link-dropdown" role="menuitem">Sair</a>
-                        </div>
-                    </div>
-                </nav>
-            </div>
-        </header>
+        <%- include('../partials/header') %>
 
         <main>
             <div class="top-container">
-                <a class="top-link" href="javascript:history.back()" aria-label="Voltar para a página inicial">
+                <a class="top-link" href="/" aria-label="Voltar para a página inicial">
                     <i class="fas fa-arrow-left" aria-hidden="true"></i>
                     <span>Voltar</span>
                 </a>
@@ -84,21 +38,33 @@
                                     <h2 class="cart-section-name"><%= item.nome %></h2>
                                 </div>
                                 <div class="cart-section-quantity-container">
-                                    <button class="cart-section-button decrease-qty" data-id="<%= item.id %>" aria-label="Diminuir quantidade de <%= item.nome %>">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <p class="cart-section-quantity" aria-label="Quantidade de <%= item.nome %>"><%= item.quantidade %></p>
-                                    <button class="cart-section-button increase-qty" data-id="<%= item.id %>" aria-label="Aumentar quantidade de <%= item.nome %>">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
+                                    <form action="/cart/products/<%= item.id %>?_method=PUT" method="POST">
+                                        <input type="hidden" name="quantity" value="<%= item.quantidade - 1 %>">
+                                        <button type="submit" class="cart-section-button" aria-label="Diminuir quantidade" <%= item.quantidade <= 1 ? 'disabled' : '' %> style="<%= item.quantidade <= 1 ? 'opacity: 0.5; cursor: not-allowed;' : '' %>">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </form>
+
+                                    <p class="cart-section-quantity" aria-label="Quantidade de <%= item.nome %>">
+                                        <%= item.quantidade %>
+                                    </p>
+
+                                    <form action="/cart/products/<%= item.id %>?_method=PUT" method="POST">
+                                        <input type="hidden" name="quantity" value="<%= item.quantidade + 1 %>">
+                                        <button type="submit" class="cart-section-button" aria-label="Aumentar quantidade">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </form>
                                 </div>
                                 <div class="cart-section-price-container">
                                     <p class="cart-section-price">Preço: <%= itemTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></p>
                                 </div>
                                 <div class="cart-section-trash-container">
-                                    <button class="cart-section-button delete-item" data-id="<%= item.id %>" aria-label="Remover <%= item.nome %> do carrinho">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
+                                    <form action="/cart/products/<%= item.id %>?_method=DELETE" method="post">
+                                        <button type="submit" class="cart-section-button">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </li>
                         <% }); %>
@@ -110,10 +76,11 @@
                         </h2>
                     </div>
 
-                    <div class="cart-section-payment">
+                    <form id="form-pagamento" action="/payment" method="POST" class="cart-section-payment">
                         <div class="cart-section-select-container">
                             <label for="payment-method" class="cart-section-select-label">*Forma de Pagamento:</label>
-                            <select class="cart-section-select" id="payment-method">
+                            
+                            <select class="cart-section-select" id="payment-method" name="metodoPagamento" required>
                                 <option value="" selected disabled>*Selecione a forma de pagamento</option>
                                 <option value="Pix">Pix</option>
                                 <option value="Dinheiro">Dinheiro</option>
@@ -121,9 +88,12 @@
                         </div>
 
                         <div class="cart-section-button-container">
-                            <button class="cart-section-button-payment" id="checkout-button">Finalizar compra</button>
+                            <button type="submit" class="cart-section-button-payment" onclick="alert('Pedido finalizado com sucesso!');">
+                                Finalizar compra
+                            </button>
                         </div>
-                    </div>
+                    </form>
+
                 <% } else { %>
                     <ul class="cart-section-container" id="cart-items-list">
                         <li><p>Seu carrinho está vazio.</p></li>
@@ -136,29 +106,8 @@
             </section>
         </main>
 
-        <footer>
-            <div class="footer-container">
-                <p class="footer-text">©2025 Sinhá Bolos e Lanches. Todos os direitos reservados.</p>
-                <p class="footer-text">Horário de funcionamento: 10h - 18h</p>
-                <p class="footer-text">
-                    <a class="footer-link" href="/">Início</a> | 
-                    <a class="footer-link" href="/about">Sobre</a> | 
-                    <a class="footer-link" href="/contact">Contato</a> | 
-                    <a class="footer-link" href="/team">Equipe</a>
-            </div>
-        </footer>
+        <%- include('../partials/footer') %>
 
         <script src="/js/utility.js" type="module"></script>
-
-        <div id="confirmation-modal" class="modal-overlay">
-            <div class="modal-content">
-                <h2 id="modal-title">Título da Confirmação</h2>
-                <p id="modal-message">Mensagem de confirmação vai aqui.</p>
-                <div class="modal-actions">
-                    <button id="modal-cancel-btn" class="modal-button cancel">Cancelar</button>
-                    <button id="modal-confirm-btn" class="modal-button confirm">Confirmar</button>
-                </div>
-            </div>
-        </div>
     </body>
 </html>

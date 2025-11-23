@@ -1,0 +1,21 @@
+.order-info {
+    background: #fff;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.order-info h2 { 
+    color: #d35400; 
+    margin-bottom: 10px; 
+}
+
+.order-status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-weight: bold;
+    background-color: #eee;
+}

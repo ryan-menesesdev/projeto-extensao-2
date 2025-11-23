@@ -7,6 +7,10 @@ renderRouter.get('/', (req, res) => {
     res.render('client/index');
 });
 
+renderRouter.get('/payment', (req, res) => {
+    res.render('client/payment');
+});
+
 renderRouter.get('/about', (req, res) => {
     res.render('client/about');
 });

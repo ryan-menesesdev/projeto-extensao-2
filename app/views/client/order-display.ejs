@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Detalhes do Pedido #<%= order.id %></title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        <link rel="stylesheet" href="/css/order-display.css">
+        <link rel="stylesheet" href="/css/reset.css">
+        <link rel="stylesheet" href="/css/header.css">
+        <link rel="stylesheet" href="/css/footer.css">
+        <link rel="stylesheet" href="/css/cart.css">
+    </head>
+    <body>
+        <%- include('../partials/header') %>
+
+        <main>
+            <div class="top-container" style="margin-top: 20px; margin-left: 20px;">
+                <a class="top-link" href="/orders">
+                    <i class="fas fa-arrow-left"></i> <span>Voltar para meus pedidos</span>
+                </a>
+            </div>
+
+            <section class="cart-section">
+                <h2 class="cart-section-title">Itens do Pedido</h2>
+                <ul class="cart-section-container">
+                    <% products.forEach(item => { %>
+                        <li class="cart-item">
+                            <div class="cart-section-img-container">
+                                <div class="cart-section-name" style="font-weight: bold;"><%= item.nome %></div>
+                            </div>
+                            
+                            <div class="cart-section-quantity-container">
+                                <p>Qtd: <%= item.quantidade %></p>
+                            </div>
+                            
+                            <div class="cart-section-price-container">
+                                <p>Unit: <%= item.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></p>
+                                <p><strong>Total: <%= (item.preco * item.quantidade).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></strong></p>
+                            </div>
+                        </li>
+                    <% }); %>
+                </ul>
+                
+                <div class="cart-section-total-container">
+                    <% 
+                        const totalPedido = products.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
+                    %>
+                    <h2 class="cart-section-total">Total do Pedido: <%= totalPedido.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></h2>
+                </div>
+            </section>
+        </main>
+
+        <%- include('../partials/footer') %>
+    </body>
+</html>

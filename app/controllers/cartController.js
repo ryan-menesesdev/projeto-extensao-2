@@ -23,7 +23,10 @@ module.exports = {
         });
     },
     addProductToCart: (req, res) => {
-        const { userId, productId } = req.body;
+        const userId = req.user.id;
+        const { productId } = req.body;
+
+        if (!userId) return res.status(401).json({ error: 'Não autenticado.' });
 
         const quantity = 1;
 
@@ -35,24 +38,23 @@ module.exports = {
 
         const db = dbConn();
 
-        const data = { userId, productId, quantity };
-
         addOrUpdateProductInCart(db, { userId, productId, quantity }, (error, result) => {
-                db.end();
-
-                if (error) {
+            if (error) {
                 console.error('Erro no CONTROLLER ao ADICIONAR AO CARRINHO: ', error);
-                    return res.status(500).json({ error: 'Erro interno do servidor.' });
-                }
-
-                res.status(200).json({ cart: result });
+                db.end();
+                return res.status(500).json({ error: 'Erro interno do servidor.' });
             }
-        );
+
+            db.end();
+
+            res.redirect(req.get('referer'));
+        });
     },
     updateCartItemQuantity: (req, res) => {
         const { productId } = req.params;
+        const { quantity } = req.body;
 
-        const { userId, quantity } = req.body;
+        const userId = req.user.id;
 
         if (!userId || !quantity) {
         return res
@@ -83,13 +85,13 @@ module.exports = {
                 return res.status(404).json({ error: 'Item não encontrado no carrinho.' });
             }
 
-            res.status(200).json({ message: 'Quantidade do item atualizada.' });
+            res.redirect('/cart');
         });
     },
 
     removeCartItem: (req, res) => {
         const { productId } = req.params;
-        const { userId } = req.body;
+        const userId = req.user.id;
 
         if (!userId) {
             return res.status(400).json({ error: 'userId é obrigatório no body.' });
@@ -113,11 +115,13 @@ module.exports = {
                 return res.status(404).json({ error: 'Item não encontrado no carrinho.' });
             }
 
-            res.status(200).json({ message: 'Item removido do carrinho.' });
+            res.redirect('/cart');
         });
     },
     finalizeCheckout: (req, res) => {
-        const { userId, metodoPagamento } = req.body;
+        const userId = req.user.id;
+
+        const { metodoPagamento } = req.body;
 
         if (!userId || !metodoPagamento) {
             return res.status(400).json({
@@ -142,7 +146,7 @@ module.exports = {
                 return res.status(500).json({ error: 'Erro interno do servidor.' });
             }
 
-            res.status(201).json({ message: 'Pagamento aprovado e pedido criado com sucesso!', orderId: result.orderId });
+            res.redirect('/payment')
         });
     },
 }
