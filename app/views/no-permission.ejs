@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Negado - Sinhá Bolos e Lanches</title>
+    
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/no-permission.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+    <div class="error-container">
+        <div class="error-icon">
+            <i class="fas fa-lock"></i>
+        </div>
+        
+        <h1 class="error-title">Acesso Negado</h1>
+        
+        <p class="error-message">
+            Desculpe, <strong><%= user ? user.nome : 'Visitante' %></strong>. <br>
+            Você não tem permissão de <strong><%= user ? user.tipo : '' %></strong> para acessar esta página.
+        </p>
+
+        <% if (user && (user.tipo === 'supervisor' || user.tipo === 'funcionario')) { %>
+            <a href="/admin/home" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Voltar ao Painel
+            </a>
+        <% } else { %>
+            <a href="/" class="btn-back">
+                <i class="fas fa-home"></i> Voltar para Loja
+            </a>
+        <% } %>
+
+        <span class="error-code">Error Code: 403 Forbidden</span>
+    </div>
+
+</body>
+</html>

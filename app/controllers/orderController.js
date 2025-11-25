@@ -57,11 +57,6 @@ module.exports = {
     },
 
     showAllAdminOrders: (req, res) => {
-
-        if (!req.user || (req.user.role !== 'funcionario' && req.user.role !== 'supervisor')) {
-            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
-        }
-
         const { status } = req.query;
 
         const db = dbConn();
@@ -74,7 +69,7 @@ module.exports = {
                 return res.status(500).json({ error: 'Erro interno do servidor.'});
             }
 
-            res.status(200).json({ orders: orders });
+            res.status(200).render('admin/orders', { orders: orders });
         });
     },
 

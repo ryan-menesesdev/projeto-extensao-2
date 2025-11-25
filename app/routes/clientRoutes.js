@@ -24,10 +24,13 @@ const {
     getProductById, 
 } = require('../controllers/productController');
 const isAuth = require('../middlewares/isAuth');
+const requireRoles = require('../middlewares/requireRoles');
+
+const permitClient = requireRoles(['client']);
 
 // ROTAS PÚBLICAS (CLIENTE) 
 
-clientRouter.post('/register', register);
+clientRouter.post('/register', permitClient, register);
 
 // - Product
 
@@ -42,29 +45,29 @@ clientRouter.get('/products/:id', getProductById);
 // - Order
 
 // REQUISIÇÃO -> /orders?userId=1 
-clientRouter.get('/orders', isAuth, listOrders);
+clientRouter.get('/orders', isAuth, permitClient, listOrders);
 
 // REQUISIÇÃO -> /orders/1?userId=1
-clientRouter.get('/orders/:id', isAuth, getOrderById);
+clientRouter.get('/orders/:id', isAuth, permitClient, getOrderById);
 
 // ------------------------------------------------------------------------------------------------------------
 
 // - Cart
 
 // REQUISIÇÃO -> /cart?userId=1
-clientRouter.get('/cart', isAuth, getCart);
+clientRouter.get('/cart', isAuth, permitClient, getCart);
 
 // REQUISIÇÃO -> /cart/add
 // Body: { "userId": 1, "productId": 3 }
-clientRouter.post('/cart/add', isAuth, addProductToCart);
+clientRouter.post('/cart/add', isAuth, permitClient, addProductToCart);
 
 // REQUISIÇÃO -> PUT /cart/products/1 
 // Body: { "userId": 1, "quantity": 3 }
-clientRouter.put('/cart/products/:productId', isAuth, updateCartItemQuantity);
+clientRouter.put('/cart/products/:productId', isAuth, permitClient, updateCartItemQuantity);
 
 // REQUISIÇÃO -> DELETE /cart/products/1 
 // Body: { "userId": 1 }
-clientRouter.delete('/cart/products/:productId', isAuth, removeCartItem);
+clientRouter.delete('/cart/products/:productId', isAuth, permitClient, removeCartItem);
 
 // ------------------------------------------------------------------------------------------------------------
 
@@ -72,7 +75,7 @@ clientRouter.delete('/cart/products/:productId', isAuth, removeCartItem);
 
 // REQUISIÇÃO -> POST /payment
 // Body: { "userId": 1, "metodoPagamento": "pix" }
-clientRouter.post('/payment', isAuth, finalizeCheckout);
+clientRouter.post('/payment', isAuth, permitClient, finalizeCheckout);
 
 module.exports = clientRouter;
 

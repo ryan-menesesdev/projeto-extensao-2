@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <title>Fila de Pedidos</title>
+        <link rel="stylesheet" href="/css/reset.css">
+        <link rel="stylesheet" href="/css/admin/orders.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    </head>
+    <body>
+        <main>
+            <div class="container">
+                
+                <div class="page-header">
+                    <h1 class="page-title"><i class="fas fa-receipt"></i> Fila de Pedidos</h1>
+                    
+                    <div class="filter-group">
+                        <a href="/admin/orders">Todos</a>
+                        <a href="/admin/orders" class="btn-filter">Recebidos</a>
+                        <a href="/admin/orders" class="btn-filter">Em Preparo</a>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">ID</th>
+                                <th>Cliente</th>
+                                <th>Data/Hora</th>
+                                <th>Pagamento</th>
+                                <th>Status do Pedido</th>
+                                <th style="width: 80px;">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if(!orders || orders.length === 0) { %>
+                                <tr><td colspan="6" style="text-align: center; padding: 30px;">Nenhum pedido encontrado.</td></tr>
+                            <% } %>
+
+                            <% orders.forEach(order => { %>
+                            <tr>
+                                <td><strong>#<%= order.id %></strong></td>
+                                <td><%= order.nomeCliente %></td>
+                                <td>
+                                    <%= new Date(order.criadoEm).toLocaleDateString('pt-BR') %> 
+                                    <small style="color: #666;"><%= new Date(order.criadoEm).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %></small>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.9rem;">
+                                        <i class="fas fa-credit-card"></i> <%= order.metodoPagamento %>
+                                    </div>
+                                    <% if(order.statusPagamento === 'Aprovado' || order.statusPagamento === 'Pago') { %>
+                                        <span style="color: #27ae60; font-size: 0.8rem; font-weight: bold;">Pago</span>
+                                    <% } else { %>
+                                        <span style="color: #c0392b; font-size: 0.8rem; font-weight: bold;">Pendente</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% 
+                                        let badgeClass = 'badge-neutral';
+                                        if(order.statusPedido === 'Recebido') badgeClass = 'badge-blue';
+                                        if(order.statusPedido === 'Em Preparo') badgeClass = 'badge-yellow';
+                                        if(order.statusPedido === 'Pronto') badgeClass = 'badge-green';
+                                        if(order.statusPedido === 'Cancelado') badgeClass = 'badge-red';
+                                    %>
+                                    <span class="badge <%= badgeClass %>">
+                                        <%= order.statusPedido %>
+                                    </span>
+                                </td>
+                                <td class="actions-cell">
+                                    <a href="/admin/orders?editId=<%= order.id %>&status=<%= %>" class="action-btn btn-edit" title="Atualizar Status">
+                                        <i class="fas fa-tasks"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+
+            <% if (typeof isModalOpen !== 'undefined' && isModalOpen && selectedOrder) { %>
+            <div class="modal-overlay">
+                <div class="modal-box">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Gerenciar Pedido #<%= selectedOrder.id %></h3>
+                        <a href="/admin/orders" class="btn-close">&times;</a>
+                    </div>
+
+                    <div style="margin-bottom: 20px; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                        <p><strong>Cliente:</strong> <%= selectedOrder.nomeCliente %></p>
+                        <p><strong>Pagamento:</strong> <%= selectedOrder.metodoPagamento %> (<%= selectedOrder.statusPagamento %>)</p>
+                    </div>
+
+                    <form action="/admin/orders/<%= selectedOrder.id %>?_method=PATCH" method="POST">
+                        
+                        <div class="form-group">
+                            <label>Atualizar Status do Pedido:</label>
+                            <select name="statusPedido" class="form-control">
+                                <option value="Recebido" <%= selectedOrder.statusPedido === 'Recebido' ? 'selected' : '' %>>Recebido</option>
+                                <option value="Em Preparo" <%= selectedOrder.statusPedido === 'Em Preparo' ? 'selected' : '' %>>Em Preparo</option>
+                                <option value="Pronto" <%= selectedOrder.statusPedido === 'Pronto' ? 'selected' : '' %>>Pronto para Retirada</option>
+                                <option value="Entregue" <%= selectedOrder.statusPedido === 'Entregue' ? 'selected' : '' %>>Entregue / Finalizado</option>
+                                <option value="Cancelado" <%= selectedOrder.statusPedido === 'Cancelado' ? 'selected' : '' %>>Cancelado</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-check-circle"></i> Atualizar Status
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <% } %>
+        </main>
+    </body>
+</html>

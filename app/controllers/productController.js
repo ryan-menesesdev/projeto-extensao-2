@@ -72,11 +72,7 @@ module.exports = {
         });
     },
      
-     showAdminProducts: (req, res) => {
-        if (!req.user || req.user.role !== 'supervisor') {
-            return res.status(403).send('<h1>Acesso Negado</h1>');
-        }
-        
+    showAdminProducts: (req, res) => {
         const { categoria } = req.query;
         const db = dbConn();
 
@@ -87,7 +83,7 @@ module.exports = {
                 return res.status(500).render('error');
             }
 
-            res.status(200).json({ products: products });
+            res.status(200).render('admin/products', { products: products });
         });
     },
     

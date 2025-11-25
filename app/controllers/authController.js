@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const path = require('path');
 const dbConn = require('../../config/dbConnection');
 const UsersModel = require('../models/userModel');
 
@@ -17,33 +16,34 @@ module.exports = {
         }
 
         const db = dbConn();
-        UsersModel.findByEmail(db, email, async (err, user) => {
+        UsersModel.findByEmail(db, email, async (err, result) => {
             db.end();
             if (err) {
                 console.error('[Auth User DB Error]', err);
                 return res.status(500).json({ status: 'error', code: 500, message: 'Erro interno ao autenticar usuário.' });
             }
 
-            if (!user) {
+            if (!result) {
                 return res.status(401).json({ status: 'error', code: 401, message: 'E-mail ou senha incorretos.' });
             }
 
             try {
-                const match = await bcrypt.compare(senha, user.senha);
+                const match = await bcrypt.compare(senha, result.senha);
+
                 if (!match) {
                     return res.status(401).json({ status: 'error', code: 401, message: 'E-mail ou senha incorretos.' });
                 }
 
-                const payload = { id: user.id, email: user.email, tipo: user.tipo };
+                const payload = { id: result.id, email: result.email, tipo: result.tipo };
 
                 const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-                const safeUser = {
-                    id: user.id,
-                    nome: user.nome,
-                    tipo: user.tipo,
-                    telefone: user.telefone,
-                    email: user.email
+                const user = {
+                    id: result.id,
+                    nome: result.nome,
+                    tipo: result.tipo,
+                    telefone: result.telefone,
+                    email: result.email
                 };
 
                 res.cookie('authToken', token, { 
@@ -51,14 +51,14 @@ module.exports = {
                     maxAge: 3600000 
                 });
 
-                return res.status(200).render('client/index', {
-                    status: 'success',
-                    code: 200,
-                    message: 'Autenticação bem-sucedida.',
-                    token,
-                    user: { safeUser },
-                    isAuthenticated: true,
-                });
+                if(user.tipo === 'funcionario' || user.tipo === 'supervisor') {
+                    
+                    console.log('=========================== É ADMIN ==========================');
+
+                    return res.redirect('/admin/home');
+                }
+
+                return res.redirect('/');
             } catch (e) {
                 console.error('[Auth Error]', e);
                 return res.status(500).json({ status: 'error', code: 500, message: 'Erro ao processar autenticação.' });
@@ -70,7 +70,7 @@ module.exports = {
 
         res.clearCookie('authToken');
 
-        return res.redirect('/');
+        return res.redirect('/login');
     },
     register: async (req, res) => {
         const { cpf, nome, senha, telefone, email } = req.body;

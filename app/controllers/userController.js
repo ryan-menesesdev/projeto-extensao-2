@@ -3,11 +3,6 @@ const { getAllUsers, getUserById, addUser, updateUser, deleteUser } = require(".
 
 module.exports = {
     showAllUsers: (req, res) => {
-       
-        if (!req.user || req.user.role !== 'supervisor') {
-            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
-        }
-
         const { tipo } = req.query;
         
         const db = dbConn();
@@ -20,7 +15,7 @@ module.exports = {
                 return res.status(500).json({ error: 'Erro interno do servidor.'});
             }
 
-            res.status(200).json({ users: result });
+            res.status(200).render('admin/employees', { users: result });
         });
     },
 
