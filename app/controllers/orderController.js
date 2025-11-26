@@ -74,38 +74,29 @@ module.exports = {
     },
 
     showAdminOrderDetails: (req, res) => {
-        if (!req.user || (req.user.role !== 'funcionario' && req.user.role !== 'supervisor')) {
-            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
+    const { id } = req.params;
+    const db = dbConn();
+
+    getAdminOrderById(db, id, (error, orderData) => {
+        db.end();
+        if (error) {
+            console.error("Erro no CONTROLLER (admin) ao buscar pedido por ID:", error);
+            return res.redirect('/admin/orders'); 
         }
-       
-        const { id } = req.params;
 
-        const db = dbConn();
+        if (!orderData) {
+            return res.redirect('/admin/orders');
+        }
 
-        getAdminOrderById(db, id, (error, order) => {
-            db.end();
-            if (error) {
-                console.error("Erro no CONTROLLER (admin) ao buscar pedido por ID:", error);
-                return res.status(500).json({ error: 'Erro interno do servidor.'});
-            }
-
-            if (!order) {
-                return res.status(400).json({ error: 'Pedido não encontrado.' });
-            }
-
-            res.status(200).json({ order: order });
-        });
-    },
+        res.render('admin/orders-display', { orderData: orderData });
+    });
+},
     alterOrderStatus: (req, res) => {
-        if (!req.user || (req.user.role !== 'funcionario' && req.user.role !== 'supervisor')) {
-            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
-        }
-
         const { id } = req.params;
         const { statusPedido } = req.body;
 
         if (!statusPedido) {
-            return res.status(400).json({ error: 'O novo "status" é obrigatório no corpo da requisição.' });
+            return res.redirect('/admin/orders');
         }
 
         const db = dbConn();
@@ -114,14 +105,12 @@ module.exports = {
             db.end();
             
             if (error) {
-                return res.status(500).json({ error: 'Erro interno no servidor.' });
+                console.error("Erro ao atualizar status:", error);
+                return res.redirect('/admin/orders'); 
             }
 
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'Pedido não encontrado.' });
-            }
-
-            res.status(200).json({ message: 'Status do pedido atualizado com sucesso.' });
+            console.log(`[Order] Pedido #${id} atualizado para: ${statusPedido}`);
+            res.redirect('/admin/orders');
         });
     }
 }

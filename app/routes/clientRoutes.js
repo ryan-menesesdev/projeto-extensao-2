@@ -26,7 +26,7 @@ const {
 const isAuth = require('../middlewares/isAuth');
 const requireRoles = require('../middlewares/requireRoles');
 
-const permitClient = requireRoles(['client']);
+const permitClient = requireRoles(['cliente']);
 
 // ROTAS PÚBLICAS (CLIENTE) 
 

@@ -12,11 +12,17 @@ body {
 
 .page-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    align-items: center; 
     margin-bottom: 25px;
     border-bottom: 2px solid #fce4ec;
     padding-bottom: 15px;
+}
+
+.page-header-content {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    flex: 1; 
 }
 
 .page-title {

@@ -6,7 +6,6 @@ body {
 }
 
 .container {
-    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -17,6 +16,12 @@ body {
     margin-bottom: 25px;
     border-bottom: 2px solid #fce4ec;
     padding-bottom: 15px;
+}
+
+.page-header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .page-title {

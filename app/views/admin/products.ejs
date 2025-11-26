@@ -6,6 +6,7 @@
         
         <link rel="stylesheet" href="/css/reset.css">
         <link rel="stylesheet" href="/css/admin/products.css">
+        <link rel="stylesheet" href="/css/admin/back.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     </head>
     <body>
@@ -13,11 +14,21 @@
             <div class="container">
                 
                 <div class="page-header">
-                    <h1 class="page-title"><i class="fas fa-boxes"></i> Estoque de Produtos</h1>
-                    
-                    <a href="/admin/products?newMode=true" class="btn-new">
-                        <i class="fas fa-plus-circle"></i> Novo Produto
-                    </a>
+                    <div class="top-container">
+                        <a class="top-link" href="/admin/home" aria-label="Voltar para a página inicial">
+                            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                            <span>Voltar</span>
+                        </a>
+                    </div>
+                    <div class="page-header-content">
+                        <h1 class="page-title"><i class="fas fa-boxes"></i> Estoque de Produtos</h1>
+                        
+                        <div>
+                            <a href="/admin/products?newMode=true" class="btn-new">
+                                <i class="fas fa-plus-circle"></i> Novo Produto
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="table-card">

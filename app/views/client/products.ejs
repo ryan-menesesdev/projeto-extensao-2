@@ -54,9 +54,15 @@
                                         
                                         <form action="/cart/add" method="post">
                                             <input type="hidden" name="productId" value="<%= product.id %>">
-                                            <button type="submit" class="item-button" onclick="alert('Produto adicionado no carrinho!');">
-                                                Adicionar ao Carrinho
-                                            </button>
+                                            <% if (typeof user !== 'undefined' && user) { %>
+                                                <button type="submit" class="item-button" onclick="alert('Produto adicionado no carrinho!');">
+                                                    Adicionar ao Carrinho
+                                                </button>
+                                            <% } else { %>
+                                                <button type="submit" class="item-button" onclick="alert('Faça seu login antes!');">
+                                                    Adicionar ao Carrinho
+                                                </button>
+                                            <% } %>
                                         </form>
                                     </div>
                                 </li>

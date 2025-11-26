@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Pedido #<%= orderData.details.id %></title>
+    
+
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <link rel="stylesheet" href="/css/admin/back.css">
+    <link rel="stylesheet" href="/css/admin/orders-display.css">
+</head>
+<body>
+
+    <div class="top-container">
+        <a class="top-link" href="/admin/orders" aria-label="Voltar para a lista">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+            <span>Voltar</span>
+        </a>
+    </div>
+
+    <main class="container">
+        <div class="page-header">
+            <div class="header-left">
+                <h1 class="page-title">Pedido #<%= orderData.details.id %></h1>
+            </div>
+            
+        <%
+            const statusMap = {
+                'recusado': 'Recusado',
+                'preparando': 'Preparando',
+                'finalizado': 'Finalizado',
+                'emAnalise': 'Em análise',
+                'confirmado': 'Confirmado'
+            };
+
+            const statusKey = orderData.details.statusPedido;
+
+            const statusTexto = statusMap[statusKey] || statusKey;
+        %>
+
+        <div class="header-status">
+            Status: <strong><%= statusTexto %></strong>
+        </div>
+        </div>
+
+        <div class="details-grid">
+            <div class="info-card">
+                <h3 class="info-title"><i class="fas fa-user"></i> Dados do Cliente</h3>
+                <div class="info-row">
+                    <span class="info-label">Nome:</span> <%= orderData.details.nomeCliente %>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span> <%= orderData.details.emailCliente %>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Telefone:</span> <%= orderData.details.telefoneCliente %>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Data do Pedido:</span> 
+                    <%= new Date(orderData.details.criadoEm).toLocaleDateString('pt-BR') %> às 
+                    <%= new Date(orderData.details.criadoEm).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3 class="info-title"><i class="fas fa-credit-card"></i> Pagamento</h3>
+                <div class="info-row">
+                    <span class="info-label">Método:</span> <%= orderData.details.metodoPagamento %>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status do Pagamento:</span>
+                    <% if(orderData.details.statusPagamento === 'Aprovado' || orderData.details.statusPagamento === 'Pago') { %>
+                        <span class="status-badge status-paid">Pago</span>
+                    <% } else { %>
+                        <span class="status-badge status-pending"><%= orderData.details.statusPagamento %></span>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-header-title">
+                <i class="fas fa-box-open"></i> Itens do Pedido
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th class="col-center col-sm">Quantidade</th>
+                        <th class="col-right col-md">Preço Unit.</th>
+                        <th class="col-right col-md">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% let totalPedido = 0; %>
+                    <% orderData.products.forEach(prod => { 
+                        let subtotal = prod.preco * prod.quantidade;
+                        totalPedido += subtotal;
+                    %>
+                    <tr>
+                        <td><%= prod.nome %></td>
+                        <td class="col-center"><%= prod.quantidade %></td>
+                        <td class="col-right">R$ <%= parseFloat(prod.preco).toFixed(2).replace('.', ',') %></td>
+                        <td class="col-right"><strong>R$ <%= subtotal.toFixed(2).replace('.', ',') %></strong></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            <div class="total-row">
+                Total do Pedido: R$ <%= totalPedido.toFixed(2).replace('.', ',') %>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>
