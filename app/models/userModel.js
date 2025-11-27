@@ -15,7 +15,7 @@ module.exports = {
 
     getUserById: (db, id, callback) => {
         const sql =
-            "SELECT id, nome, tipo, telefone, email FROM usuario WHERE id = ?";
+            "SELECT id, cpf, nome, tipo, telefone, email FROM usuario WHERE id = ?";
         const params = [id];
 
         db.query(sql, params, callback);

@@ -20,7 +20,7 @@
         
         <p class="error-message">
             Desculpe, <strong><%= user ? user.nome : 'Visitante' %></strong>. <br>
-            Você não tem permissão de <strong><%= user ? user.tipo : '' %></strong> para acessar esta página.
+            Você não tem permissão necessária para acessar esta página.
         </p>
 
         <% if (user && (user.tipo === 'supervisor' || user.tipo === 'funcionario')) { %>

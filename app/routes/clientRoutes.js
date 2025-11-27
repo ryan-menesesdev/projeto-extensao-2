@@ -30,7 +30,7 @@ const permitClient = requireRoles(['cliente']);
 
 // ROTAS PÚBLICAS (CLIENTE) 
 
-clientRouter.post('/register', permitClient, register);
+clientRouter.post('/register', register);
 
 // - Product
 

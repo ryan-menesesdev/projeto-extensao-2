@@ -1,160 +1,89 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <title>Gerenciar Produtos</title>
-        
-        <link rel="stylesheet" href="/css/reset.css">
-        <link rel="stylesheet" href="/css/admin/products.css">
-        <link rel="stylesheet" href="/css/admin/back.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    </head>
-    <body>
-        <main>
-            <div class="container">
-                
-                <div class="page-header">
-                    <div class="top-container">
-                        <a class="top-link" href="/admin/home" aria-label="Voltar para a página inicial">
-                            <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                            <span>Voltar</span>
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar Produtos</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/admin/products.css">
+    <link rel="stylesheet" href="/css/admin/back.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    <main>
+        <div class="container">
+            
+            <div class="page-header">
+                <div class="top-container">
+                    <a class="top-link" href="/admin/home" aria-label="Voltar para a página inicial">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        <span>Voltar</span>
+                    </a>
+                </div>
+                <div class="page-header-content">
+                    <h1 class="page-title"><i class="fas fa-boxes"></i> Estoque de Produtos</h1>
+                    <div>
+                        <a href="/admin/products/add" class="btn-new">
+                            <i class="fas fa-plus-circle"></i> Novo Produto
                         </a>
                     </div>
-                    <div class="page-header-content">
-                        <h1 class="page-title"><i class="fas fa-boxes"></i> Estoque de Produtos</h1>
-                        
-                        <div>
-                            <a href="/admin/products?newMode=true" class="btn-new">
-                                <i class="fas fa-plus-circle"></i> Novo Produto
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="table-card">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width: 50px;">ID</th>
-                                <th style="width: 70px;">Img</th>
-                                <th>Produto</th>
-                                <th>Categoria</th>
-                                <th>Preço</th>
-                                <th>Status</th>
-                                <th style="width: 150px;">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% if(products.length === 0) { %>
-                                <tr><td colspan="7" style="text-align: center; padding: 30px;">Nenhum produto cadastrado.</td></tr>
-                            <% } %>
-
-                            <% products.forEach(p => { %>
-                            <tr>
-                                <td>#<%= p.id %></td>
-                                <td>
-                                    <img src="<%= p.imagem || '/images/default-product.png' %>" alt="Foto" class="prod-img">
-                                </td>
-                                <td>
-                                    <strong><%= p.nome %></strong><br>
-                                    <small style="color: #777;"><%= p.descricao %></small>
-                                </td>
-                                <td><%= p.categoria %></td>
-                                <td>R$ <%= Number(p.preco).toFixed(2) %></td>
-                                <td>
-                                    <% if(p.disponivel) { %>
-                                        <span class="badge badge-avail">Disponível</span>
-                                    <% } else { %>
-                                        <span class="badge badge-unavail">Indisponível</span>
-                                    <% } %>
-                                </td>
-                                <td class="actions-cell">
-                                    
-                                    <a href="/admin/products?editId=<%= p.id %>" class="action-btn btn-edit" title="Editar">
-                                        <i class="fas fa-pen-to-square"></i>
-                                    </a>
-
-                                    <form action="/admin/products/<%= p.id %>?_method=PATCH" method="POST" style="display:inline;">
-                                        <input type="hidden" name="disponivel" value="<%= !p.disponivel %>">
-                                        <button type="submit" class="action-btn btn-toggle" title="Alterar Disponibilidade">
-                                            <i class="fas fa-sync-alt"></i>
-                                        </button>
-                                    </form>
-
-                                    <form action="/admin/products/<%= p.id %>?_method=DELETE" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja apagar <%= p.nome %>?');">
-                                        <button type="submit" class="action-btn btn-delete" title="Excluir">
-                                            <i class="fas fa-trash-can"></i>
-                                        </button>
-                                    </form>
-
-                                </td>
-                            </tr>
-                            <% }) %>
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
-
-            <% if (typeof isModalOpen !== 'undefined' && isModalOpen) { %>
-            <div class="modal-overlay">
-                <div class="modal-box">
-                    <div class="modal-header">
-                        <h3 class="modal-title">
-                            <%= selectedProduct.id ? 'Editar Produto' : 'Adicionar Produto' %>
-                        </h3>
-                        <a href="/admin/products" class="btn-close">&times;</a>
-                    </div>
-
-                    <% 
-                    let actionUrl = selectedProduct.id ? `/admin/products/${selectedProduct.id}?_method=PUT` : '/admin/products';
-                    %>
-
-                    <form action="<%= actionUrl %>" method="POST">
-                        
-                        <div class="form-group">
-                            <label>Nome do Produto:</label>
-                            <input type="text" name="nome" class="form-control" required value="<%= selectedProduct.nome || '' %>">
-                        </div>
-
-                        <div style="display: flex; gap: 15px;">
-                            <div class="form-group" style="flex: 1;">
-                                <label>Preço (R$):</label>
-                                <input type="number" step="0.01" name="preco" class="form-control" required value="<%= selectedProduct.preco || '' %>">
-                            </div>
-                            <div class="form-group" style="flex: 1;">
-                                <label>Categoria:</label>
-                                <input type="text" name="categoria" class="form-control" required value="<%= selectedProduct.categoria || '' %>">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>URL da Imagem:</label>
-                            <input type="text" name="imagem" class="form-control" value="<%= selectedProduct.imagem || '' %>">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Descrição:</label>
-                            <textarea name="descricao" rows="3" class="form-control" required><%= selectedProduct.descricao || '' %></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Disponibilidade Inicial:</label>
-                            <select name="disponivel" class="form-control">
-                                <option value="1" <%= selectedProduct.disponivel ? 'selected' : '' %>>Visível na Loja</option>
-                                <option value="0" <%= (!selectedProduct.disponivel && selectedProduct.id) ? 'selected' : '' %>>Oculto</option>
-                            </select>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="submit" class="btn-submit">
-                                <i class="fas fa-save"></i> Salvar Dados
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </div>
-            <% } %>
-        </main>
-    </body>
+
+            <div class="table-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">ID</th>
+                            <th style="width: 70px;">Img</th>
+                            <th>Produto</th>
+                            <th>Categoria</th>
+                            <th>Preço</th>
+                            <th>Status (Disponibilidade)</th>
+                            <th style="width: 150px;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(products.length === 0) { %>
+                            <tr><td colspan="7" style="text-align: center; padding: 30px;">Nenhum produto cadastrado.</td></tr>
+                        <% } %>
+
+                        <% products.forEach(p => { %>
+                        <tr>
+                            <td>#<%= p.id %></td>
+                            <td>
+                                <img src="<%= p.imagem || '/images/default-product.png' %>" alt="Foto" class="prod-img">
+                            </td>
+                            <td>
+                                <strong><%= p.nome %></strong><br>
+                                <small style="color: #777;"><%= p.descricao %></small>
+                            </td>
+                            <td><%= p.categoria %></td>
+                            <td>R$ <%= Number(p.preco).toFixed(2) %></td>
+                            <td>
+                                <form action="/admin/products/<%= p.id %>?_method=PATCH" method="POST">
+                                    <select name="disponivel" class="form-control" style="width: 100%; cursor: pointer;" onchange="this.form.submit()">
+                                        <option value="1" <%= p.disponivel ? 'selected' : '' %>>Disponível</option>
+                                        <option value="0" <%= !p.disponivel ? 'selected' : '' %>>Indisponível</option>
+                                    </select>
+                                </form>
+                            </td>
+                            <td class="actions-cell">
+                                <a href="/admin/products/edit/<%= p.id %>" class="action-btn btn-edit" title="Editar">
+                                    <i class="fas fa-pen-to-square"></i>
+                                </a>
+
+                                <form action="/admin/products/<%= p.id %>?_method=DELETE" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja apagar <%= p.nome %>?');">
+                                    <button type="submit" class="action-btn btn-delete" title="Excluir">
+                                        <i class="fas fa-trash-can"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
 </html>

@@ -43,35 +43,25 @@ module.exports = {
         });
     },
     alterProductAvailability: (req, res) => {
-        if (!req.user || (req.user.role !== 'funcionario' && req.user.role !== 'supervisor')) {
-            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
-        }
-
         const { id } = req.params;
-        const { disponivel } = req.body;
 
-        if (typeof disponivel !== 'boolean') {
-            return res.status(400).json({ error: 'A "disponibilidade" (true/false) é obrigatória no corpo da requisição.' });
-        }
+        const disponivelValue = req.body.disponivel; 
+
+        const isDisponivel = (disponivelValue == '1' || disponivelValue == 1 || disponivelValue == 'true');
 
         const db = dbConn();
 
-        alterProductAvailability(db, disponivel, id, (error, result) => {
+        alterProductAvailability(db, isDisponivel, id, (error, result) => {
             db.end();
 
             if (error) {
-                console.log("Erro no Controller de PRODUTOS ao buscar por ID: ", error);
-                return res.status(500).json({ error: "Erro interno de servidor." });
+                console.log("Erro no Controller de PRODUTOS:", error);
+                return res.status(500).send("Erro interno.");
             }
-
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'Produto não encontrado.' });
-            }
-
-            res.status(200).json({ message: "Disponibilidade do produto alterada." });
+            
+            res.redirect('/admin/products');
         });
     },
-     
     showAdminProducts: (req, res) => {
         const { categoria } = req.query;
         const db = dbConn();
@@ -88,17 +78,13 @@ module.exports = {
     },
     
     addProduct: (req, res) => {
-        if (!req.user || req.user.role !== 'supervisor') {
-            return res.status(403).send('<h1>Acesso Negado</h1>');
-        }
-
         const productData = {
             nome: req.body.nome,
-            preco: req.body.preco,
+            preco: parseFloat(req.body.preco),
             descricao: req.body.descricao,
             categoria: req.body.categoria,
             imagem: req.body.imagem,
-            disponivel: req.body.disponivel === 1 
+            disponivel: req.body.disponivel == '1' 
         };
 
         const db = dbConn();
@@ -110,22 +96,18 @@ module.exports = {
                 return res.status(500).render('error');
             }
 
-            res.status(201).json({message: "Produto adicionado com sucesso!"});
+            res.redirect('/admin/products');
         });
     },
 
     updateProduct: (req, res) => {
-        if (!req.user || req.user.role !== 'supervisor') {
-            return res.status(403).send('<h1>Acesso Negado</h1>');
-        }
-
         const { id } = req.params;
         const productData = {
             nome: req.body.nome,
-            preco: req.body.preco,
+            preco: parseFloat(req.body.preco),
             descricao: req.body.descricao,
             categoria: req.body.categoria,
-            disponivel: req.body.disponivel
+            disponivel: req.body.disponivel == '1'
         };
 
         const db = dbConn();
@@ -135,16 +117,12 @@ module.exports = {
                 console.error("Erro no CONTROLLER ao atualizar produto:", error);
                 return res.status(500).render('error');
             }
-        });
 
-        res.status(201).json({message: "Produto editado com sucesso!"});
+            res.redirect('/admin/products');
+        });
     },
 
     deleteProduct: (req, res) => {
-        if (!req.user || req.user.role !== 'supervisor') {
-            return res.status(403).send('<h1>Acesso Negado</h1>');
-        }
-        
         const { id } = req.params;
         const db = dbConn();
 
@@ -154,9 +132,8 @@ module.exports = {
                 console.error("Erro no CONTROLLER ao deletar produto:", error);
                 return res.status(500).render('error');
             }
+
+            res.redirect('/admin/products');
         });
-
-        res.status(200).json({message: "Produto apagado com sucesso!"});
     }
-
 }
