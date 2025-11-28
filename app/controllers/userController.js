@@ -13,7 +13,7 @@ module.exports = {
 
             if (error) {
                 console.error("Erro no CONTROLLER ao listar usuários:", error);
-                return res.status(500).json({ error: 'Erro interno do servidor.'});
+                return res.status(500).render('error');
             }
 
             res.status(200).render('admin/employees', { users: result });
@@ -21,10 +21,6 @@ module.exports = {
     },
 
     showUserDetails: (req, res) => {
-        
-        if (!req.user || req.user.role !== 'supervisor') {
-            return res.status(401).json({ error: 'Você não tem acesso a essa funcionalidade'});
-        }
       
         const { id } = req.params;
 
@@ -35,11 +31,7 @@ module.exports = {
             
             if (error) {
                 console.error("Erro no CONTROLLER ao buscar usuário por ID:", error);
-                return res.status(500).json({ error: 'Erro interno do servidor.'});
-            }
-
-            if (!result) {
-                return res.status(400).json({ error: 'Usuário não encontrado.' });
+                return res.status(500).render('error');
             }
             
             res.status(200).json({ user: result });
@@ -68,12 +60,30 @@ module.exports = {
                 
                 if (error) {
                     if (error.code === 'ER_DUP_ENTRY') {
-                        return res.render('add-user', { 
-                            errorMessage: 'Erro: Este Email ou CPF já está cadastrado no sistema.' 
+                        const errorMap = {};
+                        const msg = "";
+
+                        if (msg.includes('email')) {
+                            errorMap.email = 'Este e-mail já está cadastrado no sistema.';
+                        } else if (msg.includes('cpf')) {
+                            errorMap.cpf = 'Este CPF já está cadastrado.';
+                        } else {
+                            const msgGenerica = 'E-mail ou CPF já existentes no sistema.';
+                            errorMap.email = msgGenerica;
+                            errorMap.cpf = msgGenerica;
+                        }
+
+                        return res.render('admin/add-user', { 
+                            errors: errorMap,
+                            formData: req.body
                         });
                     }
+
                     console.error("Erro no CONTROLLER ao ADICIONAR usuário:", error);
-                    return res.status(500).send("Erro interno ao cadastrar usuário.");
+                    return res.render('admin/add-user', { 
+                        errors: { nome: 'Erro interno ao salvar usuário.' },
+                        formData: req.body
+                    });
                 }
 
                 res.redirect('/admin/users');
@@ -81,7 +91,10 @@ module.exports = {
 
         } catch (error) {
             console.error("Erro ao gerar hash da senha:", error);
-            return res.status(500).send("Erro interno de segurança.");
+            return res.render('admin/add-user', { 
+                errors: { senha: 'Erro de segurança ao processar senha.' },
+                formData: req.body
+            });
         }
     },
     updateUser: (req, res) => {
@@ -97,17 +110,21 @@ module.exports = {
         const db = dbConn();
         updateUser(db, id, userData, (error, result) => {
             db.end();
+
             if (error) {
                 if (error.code === 'ER_DUP_ENTRY') {
-                    console.log("Email duplicado na edição");
-                    return res.send("Erro: Email já utilizado por outro usuário. <a href='/admin/users'>Voltar</a>");
-                }
-                console.error("Erro no CONTROLLER ao ATUALIZAR usuário:", error);
-                return res.status(500).send("Erro interno.");
-            }
+                    const errorMap = {};
+                    const msg = "";
 
-            if (result.affectedRows === 0) {
-                return res.status(404).send('Usuário não encontrado.');
+                    if (msg.includes('email')) {
+                        errorMap.email = 'Este e-mail já está cadastrado no sistema.';
+                    }
+
+                    return res.render('admin/edit-user', { 
+                        errors: errorMap,
+                        formData: req.body
+                    });
+                }
             }
 
             res.redirect('/admin/users');
@@ -121,12 +138,7 @@ module.exports = {
             db.end();
             if (error) {
                 console.error("Erro no CONTROLLER ao DELETAR usuário:", error);
-
-                return res.status(500).json({ error: 'Erro interno do servidor.' });
-            }
-
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'Usuário não encontrado.' });
+                return res.status(500).render('error');
             }
 
             res.redirect('/admin/users');

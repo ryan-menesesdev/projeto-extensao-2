@@ -2,25 +2,28 @@ module.exports = {
   
     getOrdersByUserId: (db, userId, status, callback) => {
         let sql = `
-            SELECT
+            SELECT 
                 p.id,
                 p.criadoEm,
                 p.statusPedido,
                 pag.metodoPagamento,
-                pag.statusPagamento
+                pag.statusPagamento,
+                COALESCE(SUM(prod.preco * pp.quantidade), 0) AS valorTotal
             FROM pedido p
             JOIN pagamento pag ON p.idPagamento = pag.id
+            LEFT JOIN produto_pedido pp ON p.id = pp.idPedido
+            LEFT JOIN produto prod ON pp.idProduto = prod.id
             WHERE p.idUsuario = ?
         `;
 
         const params = [userId];
 
-        if(status) {
+        if (status) {
             sql += ' AND p.statusPedido = ?';
-            params.push(status)
+            params.push(status);
         }
 
-        sql += ' ORDER BY p.criadoEm DESC';
+        sql += ' GROUP BY p.id ORDER BY p.criadoEm DESC';
 
         db.query(sql, params, callback);
     },

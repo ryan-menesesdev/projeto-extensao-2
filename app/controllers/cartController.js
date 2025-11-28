@@ -5,10 +5,6 @@ module.exports = {
     getCart: (req, res) => {
         const userId = req.user.id;
 
-        if(!userId) {
-            return res.status(400).json({ error: "Não existe nenhum Usuário vinculado a esse carrinho" });
-        }
-
         const db = dbConn();
 
         getCartItemsByUserId(db, userId, (error, result) => {
@@ -16,7 +12,7 @@ module.exports = {
 
             if (error) {
                 console.error("Erro no CONTROLLER ao buscar CARRINHO: ", error);
-                return res.status(500).json({ error: "Erro interno do servidor." });
+                return res.status(500).render('error');
             }
 
             res.status(200).render('client/cart', { cart: result });
@@ -26,15 +22,7 @@ module.exports = {
         const userId = req.user.id;
         const { productId } = req.body;
 
-        if (!userId) return res.status(401).json({ error: 'Não autenticado.' });
-
         const quantity = 1;
-
-        if (!userId || !productId) {
-            return res.status(400).json({
-                error: 'Usuário e produto não encontrados.',
-            });
-        }
 
         const db = dbConn();
 
@@ -42,7 +30,7 @@ module.exports = {
             if (error) {
                 console.error('Erro no CONTROLLER ao ADICIONAR AO CARRINHO: ', error);
                 db.end();
-                return res.status(500).json({ error: 'Erro interno do servidor.' });
+                return res.status(500).render('error');
             }
 
             db.end();
@@ -56,16 +44,7 @@ module.exports = {
 
         const userId = req.user.id;
 
-        if (!userId || !quantity) {
-        return res
-            .status(400)
-            .json({ error: 'userId e quantity são obrigatórios no body.' });
-        }
-
         const qty = parseInt(quantity, 10);
-        if (isNaN(qty) || qty <= 0) {
-            return res.status(400).json({ error: 'quantity deve ser um número positivo maior que zero.' });
-        }
 
         const db = dbConn();
         const data = {
@@ -78,11 +57,7 @@ module.exports = {
             db.end();
             if (error) {
                 console.error('Erro no CONTROLLER ao ATUALIZAR QUANTIDADE: ', error);
-                return res.status(500).json({ error: 'Erro interno do servidor.' });
-            }
-            
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'Item não encontrado no carrinho.' });
+                return res.status(500).render('error');
             }
 
             res.redirect('/cart');
@@ -92,10 +67,6 @@ module.exports = {
     removeCartItem: (req, res) => {
         const { productId } = req.params;
         const userId = req.user.id;
-
-        if (!userId) {
-            return res.status(400).json({ error: 'userId é obrigatório no body.' });
-        }
 
         const db = dbConn();
 
@@ -108,11 +79,7 @@ module.exports = {
             db.end();
             if (error) {
                 console.error('Erro no CONTROLLER ao REMOVER ITEM: ', error);
-                return res.status(500).json({ error: 'Erro interno do servidor.' });
-            }
-
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'Item não encontrado no carrinho.' });
+                return res.status(500).render('error');
             }
 
             res.redirect('/cart');
@@ -123,12 +90,6 @@ module.exports = {
 
         const { metodoPagamento } = req.body;
 
-        if (!userId || !metodoPagamento) {
-            return res.status(400).json({
-                error: 'userId e metodoPagamento são obrigatórios.',
-            });
-        }
-
         const db = dbConn();
         const data = { userId, metodoPagamento };
 
@@ -136,14 +97,8 @@ module.exports = {
             db.end();
 
             if (error) {
-                if (error.message === 'CARRINHO_VAZIO') {
-                    return res.status(400).json({
-                        error: 'Não é possível finalizar a compra com um carrinho vazio.',
-                    });
-                }
-
                 console.error('Erro no CONTROLLER ao finalizar pagamento: ', error);
-                return res.status(500).json({ error: 'Erro interno do servidor.' });
+                return res.status(500).render('error');
             }
 
             res.redirect('/payment')

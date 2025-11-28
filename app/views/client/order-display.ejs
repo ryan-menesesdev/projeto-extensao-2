@@ -3,13 +3,14 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" href="images/logo-better-nobackground.png">
         <title>Detalhes do Pedido #<%= order.id %></title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="stylesheet" href="/css/order-display.css">
         <link rel="stylesheet" href="/css/reset.css">
         <link rel="stylesheet" href="/css/header.css">
         <link rel="stylesheet" href="/css/footer.css">
-        <link rel="stylesheet" href="/css/cart.css">
+        <link rel="stylesheet" href="/css/back.css">
     </head>
     <body>
         <%- include('../partials/header') %>
@@ -21,34 +22,36 @@
                 </a>
             </div>
 
-            <section class="cart-section">
-                <h2 class="cart-section-title">Itens do Pedido</h2>
-                <ul class="cart-section-container">
+            <section class="order-section">
+                <h2 class="order-section-title">Itens do Pedido</h2>
+                
+                <ul class="order-section-container">
                     <% products.forEach(item => { %>
-                        <li class="cart-item">
-                            <div class="cart-section-img-container">
-                                <div class="cart-section-name" style="font-weight: bold;"><%= item.nome %></div>
+                        <li class="order-section-item">
+                            <div class="order-section-img-container">
+                                <div class="order-section-name"><%= item.nome %></div>
                             </div>
                             
-                            <div class="cart-section-quantity-container">
-                                <p>Qtd: <%= item.quantidade %></p>
+                            <div class="order-section-details-container">
+                                <p class="order-section-quantity">Qtd: <%= item.quantidade %></p>
                             </div>
                             
-                            <div class="cart-section-price-container">
-                                <p>Unit: <%= item.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></p>
-                                <p><strong>Total: <%= (item.preco * item.quantidade).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></strong></p>
+                            <div class="order-section-details-container" style="flex-direction: column; align-items: flex-end; gap: 5px;">
+                                <p class="order-section-price" style="font-weight: 400; font-size: 1.2rem;">Unit: <%= item.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></p>
+                                <p class="order-section-price"><strong>Total: <%= (item.preco * item.quantidade).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></strong></p>
                             </div>
                         </li>
                     <% }); %>
                 </ul>
                 
-                <div class="cart-section-total-container">
+                <div class="order-section-total-container">
                     <% 
                         const totalPedido = products.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
                     %>
-                    <h2 class="cart-section-total">Total do Pedido: <%= totalPedido.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></h2>
+                    <h2 class="order-section-total">Total do Pedido: <%= totalPedido.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></h2>
                 </div>
-            </section>
+                
+                </section>
         </main>
 
         <%- include('../partials/footer') %>

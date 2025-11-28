@@ -7,64 +7,63 @@ require('dotenv').config();
 
 module.exports = {
     authUser: async (req, res) => {
-        console.log('[Authenticate User Controller]');
+    console.log('[Authenticate User Controller]');
+    const { email, senha } = req.body;
 
-        const { email, senha } = req.body;
+    const db = dbConn();
+    UsersModel.findByEmail(db, email, async (err, result) => {
+        db.end();
+        
+        if (err) {
+            console.error('[Auth User DB Error]', err);
 
-        if (!email || !senha) {
-            return res.status(400).json({ status: 'error', code: 400, message: 'E-mail e senha são obrigatórios.' });
+            return res.status(500).render('login', {
+                errors: { email: 'Erro interno. Tente novamente mais tarde.' },
+                formData: req.body
+            });
         }
 
-        const db = dbConn();
-        UsersModel.findByEmail(db, email, async (err, result) => {
-            db.end();
-            if (err) {
-                console.error('[Auth User DB Error]', err);
-                return res.status(500).json({ status: 'error', code: 500, message: 'Erro interno ao autenticar usuário.' });
+        const invalidCredentialsError = () => {
+            return res.status(401).render('login', {
+                errors: { senha: 'E-mail ou senha incorretos.' }, 
+                formData: req.body
+            });
+        };
+
+        if (!result) {
+            return invalidCredentialsError();
+        }
+
+        try {
+            const match = await bcrypt.compare(senha, result.senha);
+
+            if (!match) {
+                return invalidCredentialsError();
             }
 
-            if (!result) {
-                return res.status(401).json({ status: 'error', code: 401, message: 'E-mail ou senha incorretos.' });
+            const payload = { id: result.id, email: result.email, tipo: result.tipo };
+            const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+            res.cookie('authToken', token, { 
+                httpOnly: true, 
+                maxAge: 3600000 
+            });
+
+            if(result.tipo === 'funcionario' || result.tipo === 'supervisor') {
+                return res.redirect('/admin/home');
             }
 
-            try {
-                const match = await bcrypt.compare(senha, result.senha);
-
-                if (!match) {
-                    return res.status(401).json({ status: 'error', code: 401, message: 'E-mail ou senha incorretos.' });
-                }
-
-                const payload = { id: result.id, email: result.email, tipo: result.tipo };
-
-                const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-                const user = {
-                    id: result.id,
-                    nome: result.nome,
-                    tipo: result.tipo,
-                    telefone: result.telefone,
-                    email: result.email
-                };
-
-                res.cookie('authToken', token, { 
-                    httpOnly: true, 
-                    maxAge: 3600000 
-                });
-
-                if(user.tipo === 'funcionario' || user.tipo === 'supervisor') {
-                    
-                    console.log('=========================== É ADMIN ==========================');
-
-                    return res.redirect('/admin/home');
-                }
-
-                return res.redirect('/');
-            } catch (e) {
-                console.error('[Auth Error]', e);
-                return res.status(500).json({ status: 'error', code: 500, message: 'Erro ao processar autenticação.' });
-            }
-        });
-    },
+            return res.redirect('/');
+            
+        } catch (e) {
+            console.error('[Auth Error]', e);
+            return res.status(500).render('login', {
+                errors: { email: 'Erro ao processar autenticação.' },
+                formData: req.body
+            });
+        }
+    });
+},
     logout: (req, res) => {
         console.log('[Logout User Controller]');
 
@@ -74,10 +73,6 @@ module.exports = {
     },
     register: async (req, res) => {
         const { cpf, nome, senha, telefone, email } = req.body;
-
-        if (!cpf || !nome || !senha || !telefone || !email) {
-            return res.status(400).json({ status: 'error', code: 400, message: 'cpf, nome, senha, telefone e email são obrigatórios.' });
-        }
 
         const userData = {
             cpf,
@@ -92,25 +87,48 @@ module.exports = {
             const hashed = await bcrypt.hash(senha, 10);
             userData.senha = hashed;
         } catch (err) {
-            console.error('Erro ao hashear senha:', err);
-            return res.status(500).json({ status: 'error', code: 500, message: 'Erro interno ao processar senha.' });
+            return res.status(500).render('register', {
+                errors: { nome: 'Erro interno ao processar senha. Tente novamente.' },
+                formData: req.body
+            });
         }
 
         const db = dbConn();
+
         UsersModel.addUser(db, userData, (error, result) => {
             db.end();
+
             if (error) {
                 if (error.code === 'ER_DUP_ENTRY') {
-                    return res.status(400).json({ status: 'error', code: 400, message: 'Email ou CPF já cadastrado.' });
+                    const errorMap = {};
+
+                    const msg = error.sqlMessage || error.message || "";
+
+                    if (msg.includes('email')) {
+                        errorMap.email = 'Este e-mail já está cadastrado em nosso sistema.';
+                    } else if (msg.includes('cpf')) {
+                        errorMap.cpf = 'Este CPF já está cadastrado.';
+                    } else {
+                        errorMap.email = 'E-mail ou CPF já cadastrados.';
+                    }
+
+                    return res.status(400).render('register', {
+                        errors: errorMap,    
+                        formData: req.body  
+                    });
                 }
+
                 console.error('Erro ao criar usuário:', error);
-                return res.status(500).json({ status: 'error', code: 500, message: 'Erro interno ao criar usuário.' });
+                return res.status(500).render('register', {
+                    errors: { nome: 'Erro interno ao salvar no banco. Tente mais tarde.' },
+                    formData: req.body
+                });
             }
 
             return res.status(201).render('login', {
                 status: 'success',
                 code: 201,
-                message: 'Usuário registrado com sucesso.',
+                message: 'Usuário registrado com sucesso! Faça seu login.',
                 userId: result.insertId
             });
         });

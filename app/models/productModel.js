@@ -14,7 +14,7 @@ module.exports = {
         db.query(sql, params, callback);
     },
     getProductById: (db, id, callback) => {
-        const sql = 'SELECT * FROM produto WHERE id = ? AND disponivel = TRUE';
+        const sql = 'SELECT * FROM produto WHERE id = ?';
         db.query(sql, [id], callback);
     },
     getAllAdminProducts: (db, categoria, callback) => {
@@ -43,12 +43,6 @@ module.exports = {
         const sql = 'UPDATE produto SET ? WHERE id = ?'; 
         const params = [productData, id];
             
-        db.query(sql, params, callback);
-    },
-    deleteProductById: (db, id, callback) => {
-        const sql = 'DELETE FROM produto WHERE id = ?';
-        const params = [id];
-
         db.query(sql, params, callback);
     },
 }

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/admin/products.css">
     <link rel="stylesheet" href="/css/admin/back.css">
+    <link rel="icon" type="image/png" href="images/logo-better-nobackground.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
@@ -71,12 +72,6 @@
                                 <a href="/admin/products/edit/<%= p.id %>" class="action-btn btn-edit" title="Editar">
                                     <i class="fas fa-pen-to-square"></i>
                                 </a>
-
-                                <form action="/admin/products/<%= p.id %>?_method=DELETE" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja apagar <%= p.nome %>?');">
-                                    <button type="submit" class="action-btn btn-delete" title="Excluir">
-                                        <i class="fas fa-trash-can"></i>
-                                    </button>
-                                </form>
                             </td>
                         </tr>
                         <% }) %>

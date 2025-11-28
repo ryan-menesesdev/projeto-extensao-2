@@ -12,8 +12,31 @@
     <link rel="stylesheet" href="/css/footer.css"> 
     <link rel="stylesheet" href="/css/header.css">
     <title>Registrar - Sinhá Bolos e Lanches</title>
+
+    <style>
+        .register-input.input-error {
+            border: 2px solid #dc3545 !important;
+            background-color: #fff8f8;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
 </head>
 <body>
+    <% 
+        const err = (typeof errors !== 'undefined') ? errors : {};
+        const data = (typeof formData !== 'undefined') ? formData : {};
+    %>
+
     <main>        
         <div class="register-main-container">
             <div class="top-container">
@@ -51,32 +74,89 @@
                     <form method="post" action="/register" class="register-form">
                         <div class="register-input-container">
                             <label class="register-label" for="input-name">*Nome</label>
-                            <input type="text" class="register-input" name="nome" id="input-name" placeholder="Insira seu nome">
+                            <input type="text" 
+                                   class="register-input <%= err.nome ? 'input-error' : '' %>" 
+                                   name="nome" 
+                                   id="input-name" 
+                                   placeholder="Insira seu nome" 
+                                   value="<%= data.nome || '' %>">
+                            
+                            <% if (err.nome) { %>
+                                <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.nome %></span>
+                            <% } %>
                         </div>
 
                         <div class="register-input-container">
-                            <label class="register-label" for="input-email">*Email (email@dominio.com)</label>
-                            <input type="email" class="register-input" name="email" id="input-email" placeholder="Insira seu email">
+                            <label class="register-label" for="input-email">*Email</label>
+                            <input type="email" 
+                                   class="register-input <%= err.email ? 'input-error' : '' %>" 
+                                   name="email" 
+                                   id="input-email" 
+                                   placeholder="Insira seu email"
+                                   value="<%= data.email || '' %>">
+
+                            <% if (err.email) { %>
+                                <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.email %></span>
+                            <% } %>
                         </div>
 
                         <div class="register-input-container">
-                            <label class="register-label" for="input-phone">*Telefone (19912345678)</label>
-                            <input type="text" class="register-input" name="telefone" id="input-phone" placeholder="Apenas números (DDD + Número)" inputmode="numeric">
+                            <label class="register-label" for="input-phone">*Telefone</label>
+                            <input 
+                                type="number" 
+                                class="register-input <%= err.telefone ? 'input-error' : '' %>" 
+                                name="telefone" 
+                                id="input-phone" 
+                                placeholder="Apenas números (DDD + Número)" 
+                                inputmode="numeric"
+                                value="<%= data.telefone || '' %>"
+                            >
+                            <% if (err.telefone) { %>
+                                <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.telefone %></span>
+                            <% } %>
                         </div>
 
                         <div class="register-input-container">
-                            <label class="register-label" for="input-cpf">*CPF (12345678910)</label>
-                            <input type="text" class="register-input" name="cpf" id="input-cpf" placeholder="Apenas números" inputmode="numeric">
+                            <label class="register-label" for="input-cpf">*CPF</label>
+                            <input 
+                                type="number" 
+                                class="register-input <%= err.cpf ? 'input-error' : '' %>" 
+                                name="cpf" 
+                                id="input-cpf" 
+                                placeholder="Apenas números" 
+                                inputmode="numeric"
+                                value="<%= data.cpf || '' %>"
+                            >
+
+                            <% if (err.cpf) { %>
+                                <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.cpf %></span>
+                            <% } %>
                         </div>
 
                         <div class="register-input-container">
                             <label class="register-label" for="input-password">*Senha</label>
-                            <input type="password" class="register-input" name="senha" id="input-password" placeholder="Insira sua senha">
+                            <input type="password" 
+                                   class="register-input <%= err.senha ? 'input-error' : '' %>" 
+                                   name="senha" 
+                                   id="input-password" 
+                                   placeholder="Insira sua senha">
+
+                            <% if (err.senha) { %>
+                                <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.senha %></span>
+                            <% } %>
                         </div>
 
                         <div class="register-input-container">
                             <label class="register-label" for="input-confirm-password">*Confirmar senha</label>
-                            <input type="password" class="register-input" name="confirm-password" id="input-confirm-password" placeholder="Insira sua senha novamente">
+                            <input type="password" 
+                                   class="register-input <%= err['confirm-password'] ? 'input-error' : '' %>" 
+                                   name="confirm-password" 
+                                   id="input-confirm-password" 
+                                   placeholder="Insira sua senha novamente">
+
+                            <% if (err['confirm-password']) { %>
+                                <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err['confirm-password'] %></span>
+                            <% } %>
                         </div>
 
                         <div id="register-button-container">
@@ -88,20 +168,7 @@
         </div>
     </main>
 
-    <footer>
-        <div class="footer-container">
-            <p class="footer-text">©2025 Sinhá Bolos e Lanches. Todos os direitos reservados.</p>
-            <p class="footer-text">Horário de funcionamento: 10h - 18h</p>
-            <nav aria-label="Navegação do rodapé">
-                <p class="footer-text">
-                    <a class="footer-link" href="/">Início</a> | 
-                    <a class="footer-link" href="/about">Sobre</a> | 
-                    <a class="footer-link" href="/contact">Contato</a> | 
-                    <a class="footer-link" href="/team">Equipe</a>
-                </p>
-            </nav>
-        </div>
-    </footer>
+    <%- include('partials/footer') %>
 
     <script src="/js/utility.js" type="module"></script>
 </body>

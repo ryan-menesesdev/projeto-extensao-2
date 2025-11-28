@@ -145,7 +145,7 @@ module.exports = {
         const { userId, metodoPagamento } = data;
 
         const statusPagamento = 'Aprovado';
-        const statusPedido = 'Em análise'; 
+        const statusPedido = 'emAnalise'; 
 
         let cartId;
         let paymentId;

@@ -5,7 +5,7 @@
         <meta name="description" content="Revise os itens no seu carrinho de compras, ajuste as quantidades e finalize seu pedido na Sinhá Bolos e Lanches.">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <link rel="icon" type="image/png" href="../assets/logo-better-nobackground.png">
+        <link rel="icon" type="image/png" href="images/logo-better-nobackground.png">
         <link rel="stylesheet" href="/css/reset.css">
         <link rel="stylesheet" href="/css/back.css">
         <link rel="stylesheet" href="/css/cart.css"> 
@@ -32,11 +32,13 @@
                         <% cart.forEach(item => { 
                             const itemTotal = item.preco * item.quantidade;
                         %>
-                            <li class="cart-item" data-product-id="<%= item.id %>">
+                            <li class="cart-section-item" data-product-id="<%= item.id %>">
+                                
                                 <div class="cart-section-img-container">
                                     <img class="cart-section-img" src="<%= item.imagem || '/images/avatar_placeholder.png' %>" alt="<%= item.nome %>">
                                     <h2 class="cart-section-name"><%= item.nome %></h2>
                                 </div>
+                                
                                 <div class="cart-section-quantity-container">
                                     <form action="/cart/products/<%= item.id %>?_method=PUT" method="POST">
                                         <input type="hidden" name="quantity" value="<%= item.quantidade - 1 %>">
@@ -56,10 +58,12 @@
                                         </button>
                                     </form>
                                 </div>
-                                <div class="cart-section-price-container">
+                                
+                                <div>
                                     <p class="cart-section-price">Preço: <%= itemTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></p>
                                 </div>
-                                <div class="cart-section-trash-container">
+
+                                <div>
                                     <form action="/cart/products/<%= item.id %>?_method=DELETE" method="post">
                                         <button type="submit" class="cart-section-button">
                                             <i class="fas fa-trash-alt"></i>
@@ -76,7 +80,7 @@
                         </h2>
                     </div>
 
-                    <form id="form-pagamento" action="/payment" method="POST" class="cart-section-payment">
+                    <form id="form-pagamento" action="/payment" method="POST" class="cart-section-payment" onsubmit="alert('Pedido finalizado com sucesso!');">
                         <div class="cart-section-select-container">
                             <label for="payment-method" class="cart-section-select-label">*Forma de Pagamento:</label>
                             
@@ -88,7 +92,7 @@
                         </div>
 
                         <div class="cart-section-button-container">
-                            <button type="submit" class="cart-section-button-payment" onclick="alert('Pedido finalizado com sucesso!');">
+                            <button type="submit" class="cart-section-button-payment">
                                 Finalizar compra
                             </button>
                         </div>
@@ -96,7 +100,9 @@
 
                 <% } else { %>
                     <ul class="cart-section-container" id="cart-items-list">
-                        <li><p>Seu carrinho está vazio.</p></li>
+                        <li class="cart-section-item" style="justify-content: center;">
+                            <p class="cart-section-name" style="color: #666;">Seu carrinho está vazio.</p>
+                        </li>
                     </ul>
 
                     <div class="cart-section-total-container" aria-live="polite">

@@ -59,6 +59,28 @@
     gap: 1.5rem;
 }
 
+.order-link-title {
+    text-decoration: underline;
+    text-decoration-color: #90170E;   
+    text-decoration-thickness: 2px;  
+    text-underline-offset: 4px;     
+    color: #AC1B11; 
+    transition: all 0.3s ease;
+}
+
+.order-link-title:hover,
+.order-link-title:active,
+.order-link-title:focus {
+    text-decoration-color: #6e130c;  
+    color: #6e130c;                  
+    cursor: pointer;
+}
+
+.order-link-title h2 {
+    color: inherit;
+    font-weight: inherit;
+}
+
 .order-card-details {
     display: flex;
     justify-content: space-between;
@@ -89,6 +111,46 @@
 
 .order-card-items-item {
     color: #555;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-block;
+    text-align: center;
+    border: 1px solid transparent;
+}
+
+.status-recusado {
+    background-color: #fde8e8;
+    color: #c53030;
+    border-color: #fbd5d5;
+}
+
+.status-analise {
+    background-color: #fdf6b2;
+    color: #b45309; 
+    border-color: #fce96a;
+}
+
+.status-preparando {
+    background-color: #e1effe;
+    color: #1a56db;
+    border-color: #b4c6fc;
+}
+
+.status-confirmado {
+    background-color: #ffffff;
+    color: #03543f;
+    border-color: #84e1bc;
+}
+
+.status-finalizado {
+    background-color: #98ebbd;
+    color: #1f2937;
+    border-color: #d1d5db;
 }
 
 @media (max-width: 768px) {

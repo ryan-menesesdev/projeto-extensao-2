@@ -6,9 +6,34 @@
     <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/admin/back.css">
     <link rel="stylesheet" href="/css/admin/employees.css"> 
+    <link rel="icon" type="image/png" href="images/logo-better-nobackground.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        .form-control.input-error {
+            border: 2px solid #dc3545 !important;
+            background-color: #fff8f8;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
 </head>
 <body>
+
+    <% 
+        const err = (typeof errors !== 'undefined') ? errors : {};
+        const data = (typeof formData !== 'undefined') ? formData : {};
+    %>
+
     <main>
         <div class="container" style="max-width: 800px; margin-top: 50px;">
             <div class="page-header">
@@ -29,40 +54,86 @@
             <% } %>
 
             <div class="table-card" style="padding: 30px;">
-                <form action="/admin/users" method="POST">
+                <form action="/admin/users/<%= user.id %>?_method=PUT" method="POST">
                     
                     <div class="form-group">
                         <label>Nome Completo:</label>
-                        <input type="text" name="nome" class="form-control" required>
+                        <input 
+                            type="text" 
+                            name="nome" 
+                            class="form-control <%= err.nome ? 'input-error' : '' %>" 
+                            value="<%= data.nome || '' %>"
+                        >
+                        <% if (err.nome) { %>
+                            <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.nome %></span>
+                        <% } %>
                     </div>
 
                     <div style="display: flex; gap: 15px;">
                         <div class="form-group" style="flex: 1;">
                             <label>CPF:</label>
-                            <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" required>
+                            <input 
+                                type="number" 
+                                name="cpf" 
+                                class="form-control <%= err.cpf ? 'input-error' : '' %>" 
+                                placeholder="Apenas números" 
+                                value="<%= data.cpf || '' %>"
+                            >
+                            <% if (err.cpf) { %>
+                                <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.cpf %></span>
+                            <% } %>
                         </div>
+
                         <div class="form-group" style="flex: 1;">
                             <label>Telefone:</label>
-                            <input type="text" name="telefone" class="form-control" placeholder="(00) 00000-0000">
+                            <input 
+                                type="number" 
+                                name="telefone" 
+                                class="form-control <%= err.telefone ? 'input-error' : '' %>" 
+                                placeholder="Apenas números"
+                                value="<%= data.telefone || '' %>"
+                            >
+                            <% if (err.telefone) { %>
+                                <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.telefone %></span>
+                            <% } %>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label>Email:</label>
-                        <input type="email" name="email" class="form-control" required>
+                        <input 
+                            type="email" 
+                            name="email" 
+                            class="form-control <%= err.email ? 'input-error' : '' %>" 
+                            value="<%= data.email || '' %>"
+                        >
+                        <% if (err.email) { %>
+                            <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.email %></span>
+                        <% } %>
                     </div>
 
                     <div class="form-group">
                         <label>Senha:</label>
-                        <input type="password" name="senha" class="form-control" required>
+                        <input 
+                            type="password" 
+                            name="senha" 
+                            class="form-control <%= err.senha ? 'input-error' : '' %>" 
+                        >
+                        <% if (err.senha) { %>
+                            <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.senha %></span>
+                        <% } %>
                     </div>
 
                     <div class="form-group">
                         <label>Tipo de Usuário (Cargo):</label>
-                        <select name="tipo" class="form-control">
-                            <option value="funcionario" selected>Funcionário</option>
-                            <option value="supervisor">Supervisor</option>
-                            </select>
+                        <select name="tipo" class="form-control <%= err.tipo ? 'input-error' : '' %>">
+                            <option value="" disabled <%= !data.tipo ? 'selected' : '' %>>Selecione</option>
+                            <option value="funcionario" <%= data.tipo === 'funcionario' ? 'selected' : '' %>>Funcionário</option>
+                            <option value="supervisor" <%= data.tipo === 'supervisor' ? 'selected' : '' %>>Supervisor</option>
+                        </select>
+                        <% if (err.tipo) { %>
+                            <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.tipo %></span>
+                        <% } %>
                     </div>
 
                     <div style="margin-top: 20px; text-align: right;">

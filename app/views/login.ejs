@@ -12,8 +12,33 @@
     <link rel="stylesheet" href="/css/footer.css"> 
     <link rel="stylesheet" href="/css/header.css">
     <title>Login - Sinhá Bolos e Lanches</title>
+
+    <style>
+        .login-input.input-error {
+            border: 2px solid #dc3545 !important;
+            background-color: #fff8f8;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-family: 'Poppins', sans-serif;
+            text-align: left; 
+        }
+    </style>
 </head>
 <body>
+    
+    <% 
+        const err = (typeof errors !== 'undefined') ? errors : {};
+        const data = (typeof formData !== 'undefined') ? formData : {};
+    %>
+
     <main>
         <div class="login-main-container">
             <div class="top-container">
@@ -55,27 +80,34 @@
 
                 <div class="form-container">
                     <form method="post" action="/login" class="login-form" novalidate>
+                        
                         <div class="login-input-container">
                             <label class="login-label" for="input-email">*Email</label>
                             <input 
                                 type="email" 
-                                class="login-input" 
+                                class="login-input <%= err.email ? 'input-error' : '' %>" 
                                 name="email" 
                                 id="input-email" 
                                 placeholder="Insira seu email" 
-                                value="<%= locals.email || '' %>"
+                                value="<%= data.email || '' %>"
                             >
+                            <% if (err.email) { %>
+                                <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.email %></span>
+                            <% } %>
                         </div>
 
                         <div class="login-input-container">
                             <label class="login-label" for="input-password">*Senha</label>
                             <input 
                                 type="password" 
-                                class="login-input" 
+                                class="login-input <%= err.senha ? 'input-error' : '' %>" 
                                 name="senha" 
                                 id="input-password" 
                                 placeholder="Insira sua senha" 
                             >
+                            <% if (err.senha) { %>
+                                <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.senha %></span>
+                            <% } %>
                         </div>
 
                         <div id="login-button-container">
@@ -87,20 +119,7 @@
         </div>
     </main>
 
-    <footer>
-        <div class="footer-container">
-            <p class="footer-text">©2025 Sinhá Bolos e Lanches. Todos os direitos reservados.</p>
-            <p class="footer-text">Horário de funcionamento: 10h - 18h</p>
-            <nav aria-label="Navegação do rodapé">
-                <p class="footer-text">
-                    <a class="footer-link" href="/">Início</a> | 
-                    <a class="footer-link" href="/about">Sobre</a> | 
-                    <a class="footer-link" href="/contact">Contato</a> | 
-                    <a class="footer-link" href="/team">Equipe</a>
-                </p>
-            </nav>
-        </div>
-    </footer>
+    <%- include('partials/footer') %>
 
     <script src="/js/utility.js" type="module"></script>
 </body>

@@ -14,7 +14,7 @@ module.exports = {
 
             if (error) {
                 console.log("Erro no Controller de PRODUTOS ao LISTAR produtos: ", error);
-                return res.status(500).json({ error: "Erro interno do servidor." });
+                return res.status(500).render('error');
             }
             
             res.render('client/products', {
@@ -32,11 +32,7 @@ module.exports = {
 
             if (error) {
                 console.log("Erro no Controller de PRODUTOS ao buscar por ID: ", error);
-                return res.status(500).json({ error: "Erro interno de servidor." });
-            }
-
-            if(!result.length) {
-                return res.status(400).json({ message: "Produto não encontrado." });
+                return res.status(500).render('error');
             }
 
             res.status(200).render('client/product-display', { product: result[0] });
@@ -56,7 +52,7 @@ module.exports = {
 
             if (error) {
                 console.log("Erro no Controller de PRODUTOS:", error);
-                return res.status(500).send("Erro interno.");
+                return res.status(500).render('error');
             }
             
             res.redirect('/admin/products');
@@ -106,6 +102,7 @@ module.exports = {
             nome: req.body.nome,
             preco: parseFloat(req.body.preco),
             descricao: req.body.descricao,
+            imagem: req.body.imagem,
             categoria: req.body.categoria,
             disponivel: req.body.disponivel == '1'
         };
@@ -121,19 +118,4 @@ module.exports = {
             res.redirect('/admin/products');
         });
     },
-
-    deleteProduct: (req, res) => {
-        const { id } = req.params;
-        const db = dbConn();
-
-        deleteProductById(db, id, (error, result) => {
-            db.end();
-            if (error) {
-                console.error("Erro no CONTROLLER ao deletar produto:", error);
-                return res.status(500).render('error');
-            }
-
-            res.redirect('/admin/products');
-        });
-    }
 }

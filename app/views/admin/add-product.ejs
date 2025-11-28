@@ -6,9 +6,34 @@
     <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/admin/back.css">
     <link rel="stylesheet" href="/css/admin/products.css"> 
+    <link rel="icon" type="image/png" href="images/logo-better-nobackground.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        .form-control.input-error {
+            border: 2px solid #dc3545 !important;
+            background-color: #fff8f8;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
 </head>
 <body>
+
+    <% 
+        const err = (typeof errors !== 'undefined') ? errors : {};
+        const data = (typeof formData !== 'undefined') ? formData : {};
+    %>
+
     <main>
         <div class="container" style="max-width: 800px; margin-top: 50px;">
             <div class="page-header">
@@ -23,38 +48,81 @@
             </div>
 
             <div class="table-card" style="padding: 30px;">
-                <form action="/admin/products" method="POST">
+                <form action="/admin/products" method="POST" novalidate>
+                    
                     <div class="form-group">
                         <label>Nome do Produto:</label>
-                        <input type="text" name="nome" class="form-control" required>
+                        <input 
+                            type="text" 
+                            name="nome" 
+                            class="form-control <%= err.nome ? 'input-error' : '' %>" 
+                            value="<%= data.nome || '' %>"
+                        >
+                        <% if (err.nome) { %>
+                            <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.nome %></span>
+                        <% } %>
                     </div>
 
                     <div style="display: flex; gap: 15px;">
                         <div class="form-group" style="flex: 1;">
                             <label>Preço (R$):</label>
-                            <input type="number" step="0.01" name="preco" class="form-control" required>
+                            <input 
+                                type="number" 
+                                step="0.01" 
+                                name="preco" 
+                                class="form-control <%= err.preco ? 'input-error' : '' %>"
+                                value="<%= data.preco || '' %>"
+                            >
+                            <% if (err.preco) { %>
+                                <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.preco %></span>
+                            <% } %>
                         </div>
+                        
                         <div class="form-group" style="flex: 1;">
                             <label>Categoria:</label>
-                            <input type="text" name="categoria" class="form-control" required>
+                            <select name="categoria" class="form-control <%= err.categoria ? 'input-error' : '' %>">
+                                <option value="" disabled <%= !data.categoria ? 'selected' : '' %>>Selecione uma opção</option>
+                                <option value="bolo" <%= data.categoria === 'bolo' ? 'selected' : '' %>>Bolo</option>
+                                <option value="bebida" <%= data.categoria === 'bebida' ? 'selected' : '' %>>Bebida</option>
+                                <option value="sobremesa" <%= data.categoria === 'sobremesa' ? 'selected' : '' %>>Sobremesa</option>
+                                <option value="salgado" <%= data.categoria === 'salgado' ? 'selected' : '' %>>Salgado</option>
+                            </select>
+                            <% if (err.categoria) { %>
+                                <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.categoria %></span>
+                            <% } %>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label>URL da Imagem:</label>
-                        <input type="text" name="imagem" class="form-control">
+                        <input 
+                            type="text" 
+                            name="imagem" 
+                            class="form-control <%= err.imagem ? 'input-error' : '' %>"
+                            value="<%= data.imagem || '' %>"
+                        >
+                        <% if (err.imagem) { %>
+                            <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.imagem %></span>
+                        <% } %>
                     </div>
 
                     <div class="form-group">
                         <label>Descrição:</label>
-                        <textarea name="descricao" rows="4" class="form-control" required></textarea>
+                        <textarea 
+                            name="descricao" 
+                            rows="4" 
+                            class="form-control <%= err.descricao ? 'input-error' : '' %>"
+                        ><%= data.descricao || '' %></textarea>
+                        <% if (err.descricao) { %>
+                            <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.descricao %></span>
+                        <% } %>
                     </div>
 
                     <div class="form-group">
                         <label>Disponibilidade Inicial:</label>
                         <select name="disponivel" class="form-control">
-                            <option value="1" selected>Visível na Loja</option>
-                            <option value="0">Oculto</option>
+                            <option value="1" <%= (data.disponivel === '1' || !data.disponivel) ? 'selected' : '' %>>Visível na Loja</option>
+                            <option value="0" <%= data.disponivel === '0' ? 'selected' : '' %>>Oculto</option>
                         </select>
                     </div>
 

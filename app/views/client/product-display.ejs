@@ -26,29 +26,29 @@
         <div class="item-display-main-container">
             <% if (product) { %>
                 <article class="item-display-section" id="product-detail-container" aria-live="polite" aria-labelledby="product-title">
-                    <div class="item-display-image-container">
+                    <div class="item-display-section-img">
                         <img 
-                            class="item-display-image" 
+                            class="item-display-img" 
                             src="<%= product.imagem || '/images/avatar_placeholder.png' %>" 
                             alt="<%= product.nome %>"
                         >
                     </div>
 
-                    <div class="item-display-info-container">
-                        <h1 class="item-display-title" id="product-title"><%= product.nome %></h1>
-                        
-                        <p class="item-display-category">
-                            <strong>Categoria:</strong> 
-                            <span class="category-badge"><%= product.categoria %></span>
-                        </p>
+                    <div class="item-display-section-content">
+                        <div class="item-display-section-text">
+                            <h1 class="item-display-title" id="product-title"><%= product.nome %></h1>
+                            
+                            <p class="item-display-paragraph">
+                                <strong>Categoria:</strong> 
+                                <span class="category-badge"><%= product.categoria %></span>
+                            </p>
 
-                        <p class="item-display-description">
-                            <strong>Descrição:</strong> 
-                            <%= product.descricao %>
-                        </p>
+                            <p class="item-display-paragraph">
+                                <strong>Descrição:</strong> 
+                                <%= product.descricao %>
+                            </p>
 
-                        <div class="item-display-price-container">
-                            <p class="item-display-price" aria-label="Preço do produto">
+                            <p class="item-display-paragraph" aria-label="Preço do produto">
                                 <strong>Preço:</strong> 
                                 <span class="price-value">
                                     <%= parseFloat(product.preco).toLocaleString('pt-BR', { 
@@ -57,30 +57,41 @@
                                     }) %>
                                 </span>
                             </p>
-                        </div>
 
-                        <div class="item-display-availability">
-                            <p class="item-display-availability-status">
+                            <p class="item-display-paragraph">
                                 <strong>Disponibilidade:</strong> 
                                 <span class="<%= product.disponivel ? 'availability-available' : 'availability-unavailable' %>">
-                                    <%= product.disponivel ? '✓ Disponível' : '✗ Indisponível' %>
+                                    <%= product.disponivel ? 'Disponível' : 'Indisponível' %>
                                 </span>
                             </p>
                         </div>
 
                         <% if (product.disponivel) { %>
                             <div class="item-display-actions">
-                                <form action="/cart/add" method="post">
-                                    <input type="hidden" name="productId" value="<%= product.id %>">
+                                <% if (typeof user !== 'undefined' && user) { %>
+                                    <form action="/cart/add" method="post">
+                                        <input type="hidden" name="productId" value="<%= product.id %>">
+                                        <button 
+                                            type="submit"
+                                            class="item-display-button" 
+                                            onclick="alert('Produto adicionado ao carrinho!');"
+                                            aria-label="Adicionar <%= product.nome %> ao carrinho"
+                                        >
+                                            <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                                            Adicionar ao Carrinho
+                                        </button>
+                                    </form>
+                                <% } else { %>
                                     <button 
+                                        type="button"
                                         class="item-display-button" 
-                                        data-product-id="<%= product.id %>"
-                                        aria-label="Adicionar <%= product.nome %> ao carrinho"
+                                        onclick="alert('Faça seu login antes!'); window.location.href='/login'; return false;"
+                                        aria-label="Necessário login para adicionar ao carrinho"
                                     >
                                         <i class="fas fa-shopping-cart" aria-hidden="true"></i>
                                         Adicionar ao Carrinho
                                     </button>
-                                </form>
+                                <% } %>
                             </div>
                         <% } else { %>
                             <div class="item-display-actions">
@@ -88,6 +99,7 @@
                                     class="item-display-button unavailable-btn" 
                                     disabled
                                     aria-label="Produto indisponível"
+                                    style="background-color: #ccc; cursor: not-allowed;"
                                 >
                                     <i class="fas fa-ban" aria-hidden="true"></i>
                                     Indisponível
@@ -96,7 +108,7 @@
                         <% } %>
 
                         <div class="item-display-info">
-                            <p class="item-display-info-text">
+                            <p class="item-display-paragraph" style="font-size: 0.9rem;">
                                 <i class="fas fa-info-circle" aria-hidden="true"></i>
                                 Para adicionar este produto ao carrinho, você deve estar logado em sua conta.
                             </p>
@@ -105,13 +117,13 @@
                 </article>
             <% } else { %>
                 <article class="item-display-section" id="product-detail-container" aria-live="polite">
-                    <div class="error-container">
+                    <div class="error-container" style="text-align: center; width: 100%;">
                         <div class="error-icon">
                             <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
                         </div>
-                        <h1 class="error-title">Produto não encontrado</h1>
-                        <p class="error-message">Desculpe, o produto que você está procurando não está disponível.</p>
-                        <a href="/" class="error-link-button">
+                        <h1 class="item-display-title">Produto não encontrado</h1>
+                        <p class="item-display-paragraph">Desculpe, o produto que você está procurando não está disponível.</p>
+                        <a href="/" class="item-display-button" style="text-decoration: none; display: inline-block; margin-top: 20px;">
                             <i class="fas fa-arrow-left" aria-hidden="true"></i>
                             Voltar à página inicial
                         </a>
