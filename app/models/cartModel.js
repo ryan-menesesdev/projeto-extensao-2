@@ -169,82 +169,73 @@ module.exports = {
         let paymentId;
         let orderId;
 
-        db.beginTransaction((err) => {
+        db.getConnection((err, connection) => {
             if (err) {
                 return callback(err);
             }
 
-            const findCartSql = 'SELECT id FROM carrinho WHERE idUsuario = ?';
-            db.query(findCartSql, [userId], (err, cartResult) => {
+            connection.beginTransaction((err) => {
                 if (err) {
-                    return db.rollback(() => callback(err))
-                };
-
-                if (cartResult.length === 0) {
-                    return db.rollback(() =>
-                        callback(new Error('Carrinho não encontrado.'))
-                    );
+                    connection.release();
+                    return callback(err);
                 }
 
-                cartId = cartResult[0].id;
+                const rollback = (error) => {
+                    connection.rollback(() => {
+                        connection.release();
+                        callback(error);
+                    });
+                };
 
-                const findItemsSql = 'SELECT 1 FROM carrinho_produto WHERE idCarrinho = ? LIMIT 1';
-                
-                db.query(findItemsSql, [cartId], (err, itemResult) => {
-                    if (err) {
-                        return db.rollback(() => callback(err))
-                    };
+                const findCartSql = 'SELECT id FROM carrinho WHERE idUsuario = ?';
+                connection.query(findCartSql, [userId], (err, cartResult) => {
+                    if (err) return rollback(err);
 
-                    if (itemResult.length === 0) {
-                        return db.rollback(() => callback(new Error('CARRINHO_VAZIO')));
-                    }
+                    cartId = cartResult[0].id;
 
-                    const createPaymentSql = 'INSERT INTO pagamento (metodoPagamento, statusPagamento) VALUES (?, ?)';
-                    db.query(createPaymentSql, [metodoPagamento, statusPagamento], (err, paymentResult) => {
-                        if (err) {
-                            return db.rollback(() => callback(err))
-                        };
+                    const findItemsSql = 'SELECT 1 FROM carrinho_produto WHERE idCarrinho = ? LIMIT 1';
+                    connection.query(findItemsSql, [cartId], (err, itemResult) => {
+                        if (err) return rollback(err);
 
-                        paymentId = paymentResult.insertId;
+                        const createPaymentSql = 'INSERT INTO pagamento (metodoPagamento, statusPagamento) VALUES (?, ?)';
+                        connection.query(createPaymentSql, [metodoPagamento, statusPagamento], (err, paymentResult) => {
+                            if (err) return rollback(err);
 
-                        const createOrderSql = 'INSERT INTO pedido (idUsuario, idPagamento, statusPedido) VALUES (?, ?, ?)';
-                        db.query(createOrderSql, [userId, paymentId, statusPedido], (err, orderResult) => {
-                            if (err) {
-                                return db.rollback(() => callback(err))
-                            };
+                            paymentId = paymentResult.insertId;
 
-                            orderId = orderResult.insertId;
+                            const createOrderSql = 'INSERT INTO pedido (idUsuario, idPagamento, statusPedido) VALUES (?, ?, ?)';
+                            connection.query(createOrderSql, [userId, paymentId, statusPedido], (err, orderResult) => {
+                                if (err) return rollback(err);
 
-                            const copyItemsSql = `
-                                INSERT INTO produto_pedido (idPedido, idProduto, quantidade)
-                                SELECT ?, idProduto, quantidade
-                                FROM carrinho_produto
-                                WHERE idCarrinho = ?
-                            `;
+                                orderId = orderResult.insertId;
 
-                            db.query(copyItemsSql, [orderId, cartId], (err, copyResult) => {
-                                if (err) {
-                                    return db.rollback(() => callback(err))
-                                };
+                                const copyItemsSql = `
+                                    INSERT INTO produto_pedido (idPedido, idProduto, quantidade)
+                                    SELECT ?, idProduto, quantidade
+                                    FROM carrinho_produto
+                                    WHERE idCarrinho = ?
+                                `;
 
-                                const clearCartSql = 'DELETE FROM carrinho_produto WHERE idCarrinho = ?';
-                                db.query(clearCartSql, [cartId], (err, deleteResult) => {
-                                    if (err) {
-                                        return db.rollback(() => callback(err))
-                                    };
-                                    db.commit((err) => {
-                                        if (err) {
-                                            return db.rollback(() => callback(err))
-                                        };
+                                connection.query(copyItemsSql, [orderId, cartId], (err, copyResult) => {
+                                    if (err) return rollback(err);
 
+                                    const clearCartSql = 'DELETE FROM carrinho_produto WHERE idCarrinho = ?';
+                                    connection.query(clearCartSql, [cartId], (err, deleteResult) => {
+                                        if (err) return rollback(err);
+
+                                        connection.commit((err) => {
+                                            if (err) return rollback(err);
+                                            
+                                            connection.release(); 
                                             callback(null, { orderId: orderId });
+                                        });
                                     });
                                 });
                             });
                         });
-                    }); 
+                    });
                 });
-            }); 
-        }); 
+            });
+        });
     },
 }
