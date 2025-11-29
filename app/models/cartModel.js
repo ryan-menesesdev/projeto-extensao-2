@@ -19,65 +19,83 @@ module.exports = {
         const { userId, productId, quantity } = data;
         let cartId;
 
-        db.beginTransaction((error) => {
-            if (error) {
-                return callback(error);
+        db.getConnection((err, connection) => {
+            if (err) {
+                return callback(err);
             }
 
-            const findCartSql = 'SELECT id FROM carrinho WHERE idUsuario = ?';
-
-            db.query(findCartSql, [userId], (error, result) => {
+            connection.beginTransaction((error) => {
                 if (error) {
-                    return db.rollback(() => callback(error));
+                    connection.release(); 
+                    return callback(error);
                 }
 
-                if (result.length > 0) {
-                    cartId = result[0].id;
-                    addProductToCart(cartId);
-                } else {
-                    const createCartSql = 'INSERT INTO carrinho (idUsuario, atualizadoEm) VALUES (?, NOW())';
-                    db.query(createCartSql, [userId], (error, result) => {
-                        if (error) {
-                            return db.rollback(() => callback(error));
-                        }
-                        cartId = result.insertId;
-                        addProductToCart(cartId); 
-                    });
-                }
+                const findCartSql = 'SELECT id FROM carrinho WHERE idUsuario = ?';
+
+                connection.query(findCartSql, [userId], (error, result) => {
+                    if (error) {
+                        return connection.rollback(() => {
+                            connection.release();
+                            callback(error);
+                        });
+                    }
+
+                    const proceedToAddItem = (idDoCarrinho) => {
+                        const addProductSql = `
+                            INSERT INTO carrinho_produto (idCarrinho, idProduto, quantidade)
+                            VALUES (?, ?, ?)
+                            ON DUPLICATE KEY UPDATE quantidade = quantidade + VALUES(quantidade);
+                        `;
+
+                        connection.query(addProductSql, [idDoCarrinho, productId, quantity], (error, result) => {
+                            if (error) {
+                                return connection.rollback(() => {
+                                    connection.release();
+                                    callback(error);
+                                });
+                            }
+
+                            const updateCartSql = 'UPDATE carrinho SET atualizadoEm = NOW() WHERE id = ?';
+                            connection.query(updateCartSql, [idDoCarrinho], (error, result) => {
+                                if (error) {
+                                    return connection.rollback(() => {
+                                        connection.release();
+                                        callback(error);
+                                    });
+                                }
+
+                                connection.commit((error) => {
+                                    if (error) {
+                                        return connection.rollback(() => {
+                                            connection.release();
+                                            callback(error);
+                                        });
+                                    }
+                                    connection.release();
+                                    callback(null, result);
+                                });
+                            });
+                        });
+                    };
+
+                    if (result.length > 0) {
+                        cartId = result[0].id;
+                        proceedToAddItem(cartId);
+                    } else {
+                        const createCartSql = 'INSERT INTO carrinho (idUsuario, atualizadoEm) VALUES (?, NOW())';
+                        connection.query(createCartSql, [userId], (error, result) => {
+                            if (error) {
+                                return connection.rollback(() => {
+                                    connection.release();
+                                    callback(error);
+                                });
+                            }
+                            cartId = result.insertId;
+                            proceedToAddItem(cartId);
+                        });
+                    }
+                });
             });
-
-            const addProductToCart = (cartId) => {
-
-                const addProductSql = `
-                INSERT INTO carrinho_produto (idCarrinho, idProduto, quantidade)
-                VALUES (?, ?, ?)
-                ON DUPLICATE KEY UPDATE quantidade = quantidade + VALUES(quantidade);
-                `;
-
-                db.query(addProductSql,[cartId, productId, quantity], (error, result) => {
-                    if (error) {
-                        return db.rollback(() => callback(error));
-                    }
-
-                    updateCartTimestamp(cartId, result);
-                });
-            };
-
-            const updateCartTimestamp = (cartId, productResult) => {
-                const updateCartSql = 'UPDATE carrinho SET atualizadoEm = NOW() WHERE id = ?';
-                db.query(updateCartSql, [cartId], (error, result) => {
-                    if (error) {
-                        return db.rollback(() => callback(error));
-                    }
-
-                    db.commit((error) => {
-                        if (error) {
-                            return db.rollback(() => callback(error));
-                        }
-                        callback(null, productResult);
-                    });
-                });
-            };
         });
     },
     updateItemQuantityInCart: (db, data, callback) => {
