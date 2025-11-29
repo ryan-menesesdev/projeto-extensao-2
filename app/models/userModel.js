@@ -1,6 +1,6 @@
 module.exports = {
     getAllUsers: (db, tipo, callback) => {
-        let sql = "SELECT id, cpf, nome, tipo, telefone, email FROM usuario WHERE tipo != 'supervisor' AND tipo != 'cliente'";
+        let sql = "SELECT id, cpf, nome, tipo, telefone, email FROM usuario WHERE tipo != 'cliente'";
 
         const params = [];
 
