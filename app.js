@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const path = require('path');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const authRouter = require('./app/routes/authRoutes')
@@ -21,9 +22,9 @@ app.use(methodOverride('_method'));
 app.use(authData);
 app.use(loadCart);
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
-app.set('views', './app/views');
+app.set('views', path.join(__dirname, 'app', 'views'));
 
 app.use(authRouter);
 app.use(renderRouter);
