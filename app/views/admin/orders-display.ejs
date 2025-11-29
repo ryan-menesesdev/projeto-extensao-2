@@ -58,8 +58,8 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">Data do Pedido:</span> 
-                    <%= new Date(orderData.details.criadoEm).toLocaleDateString('pt-BR') %> às 
-                    <%= new Date(orderData.details.criadoEm).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %>
+                    <%= new Date(orderData.details.criadoEm).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) %> às 
+                    <%= new Date(orderData.details.criadoEm).toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute:'2-digit' }) %>
                 </div>
             </div>
 

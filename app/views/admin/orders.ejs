@@ -85,8 +85,15 @@
                     </td>
                     <td><%= order.nomeCliente %></td>
                     <td>
-                        <%= new Date(order.criadoEm).toLocaleDateString('pt-BR') %> 
-                        <small style="color: #666;"><%= new Date(order.criadoEm).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) %></small>
+                        <%= new Date(order.criadoEm).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) %> 
+                        
+                        <small style="color: #666;">
+                            <%= new Date(order.criadoEm).toLocaleTimeString('pt-BR', { 
+                                timeZone: 'America/Sao_Paulo', 
+                                hour: '2-digit', 
+                                minute:'2-digit' 
+                            }) %>
+                        </small>
                     </td>
                     <td>
                         <div style="font-size: 0.9rem;">
