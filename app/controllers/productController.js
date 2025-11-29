@@ -10,8 +10,6 @@ module.exports = {
         const db = dbConn();
 
         getAllProducts(db, categoria, (error, result) => {
-            db.end();
-
             if (error) {
                 console.log("Erro no Controller de PRODUTOS ao LISTAR produtos: ", error);
                 return res.status(500).render('error');
@@ -28,8 +26,6 @@ module.exports = {
         const db = dbConn();
 
         getProductById(db, id, (error, result) => {
-            db.end();
-
             if (error) {
                 console.log("Erro no Controller de PRODUTOS ao buscar por ID: ", error);
                 return res.status(500).render('error');
@@ -48,8 +44,6 @@ module.exports = {
         const db = dbConn();
 
         alterProductAvailability(db, isDisponivel, id, (error, result) => {
-            db.end();
-
             if (error) {
                 console.log("Erro no Controller de PRODUTOS:", error);
                 return res.status(500).render('error');
@@ -63,7 +57,6 @@ module.exports = {
         const db = dbConn();
 
         getAllAdminProducts(db, categoria, (error, products) => {
-            db.end();
             if (error) {
                 console.error("Erro ao listar produtos", error);
                 return res.status(500).render('error');
@@ -86,7 +79,6 @@ module.exports = {
         const db = dbConn();
 
         createProduct(db, productData, (error, result) => {
-            db.end();
             if (error) {
                 console.error("Erro no CONTROLLER ao criar produto:", error);
                 return res.status(500).render('error');

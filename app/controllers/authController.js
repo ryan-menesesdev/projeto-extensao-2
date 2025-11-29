@@ -11,9 +11,7 @@ module.exports = {
     const { email, senha } = req.body;
 
     const db = dbConn();
-    UsersModel.findByEmail(db, email, async (err, result) => {
-        db.end();
-        
+    UsersModel.findByEmail(db, email, async (err, result) => {        
         if (err) {
             console.error('[Auth User DB Error]', err);
 
@@ -96,8 +94,6 @@ module.exports = {
         const db = dbConn();
 
         UsersModel.addUser(db, userData, (error, result) => {
-            db.end();
-
             if (error) {
                 if (error.code === 'ER_DUP_ENTRY') {
                     const errorMap = {};

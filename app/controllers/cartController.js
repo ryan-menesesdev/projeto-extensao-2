@@ -8,8 +8,6 @@ module.exports = {
         const db = dbConn();
 
         getCartItemsByUserId(db, userId, (error, result) => {
-            db.end();
-
             if (error) {
                 console.error("Erro no CONTROLLER ao buscar CARRINHO: ", error);
                 return res.status(500).render('error');
@@ -29,11 +27,8 @@ module.exports = {
         addOrUpdateProductInCart(db, { userId, productId, quantity }, (error, result) => {
             if (error) {
                 console.error('Erro no CONTROLLER ao ADICIONAR AO CARRINHO: ', error);
-                db.end();
                 return res.status(500).render('error');
             }
-
-            db.end();
 
             res.redirect(req.get('referer'));
         });
@@ -54,7 +49,6 @@ module.exports = {
         };
 
         updateItemQuantityInCart(db, data, (error, result) => {
-            db.end();
             if (error) {
                 console.error('Erro no CONTROLLER ao ATUALIZAR QUANTIDADE: ', error);
                 return res.status(500).render('error');
@@ -76,7 +70,6 @@ module.exports = {
         };
 
         removeItemFromCart(db, data, (error, result) => {
-            db.end();
             if (error) {
                 console.error('Erro no CONTROLLER ao REMOVER ITEM: ', error);
                 return res.status(500).render('error');
@@ -94,8 +87,6 @@ module.exports = {
         const data = { userId, metodoPagamento };
 
         createOrderFromCart(db, data, (error, result) => {
-            db.end();
-
             if (error) {
                 console.error('Erro no CONTROLLER ao finalizar pagamento: ', error);
                 return res.status(500).render('error');

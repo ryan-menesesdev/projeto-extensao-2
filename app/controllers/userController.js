@@ -9,8 +9,6 @@ module.exports = {
         const db = dbConn();
 
         getAllUsers(db, tipo, (error, result) => {
-            db.end();
-
             if (error) {
                 console.error("Erro no CONTROLLER ao listar usuários:", error);
                 return res.status(500).render('error');
@@ -27,8 +25,6 @@ module.exports = {
         const db = dbConn();
 
         getUserById(db, id, (error, result) => {
-            db.end();
-            
             if (error) {
                 console.error("Erro no CONTROLLER ao buscar usuário por ID:", error);
                 return res.status(500).render('error');
@@ -56,8 +52,6 @@ module.exports = {
             const db = dbConn();
             
             addUser(db, userData, (error, result) => {
-                db.end();
-                
                 if (error) {
                     if (error.code === 'ER_DUP_ENTRY') {
                         const errorMap = {};
@@ -109,8 +103,6 @@ module.exports = {
 
         const db = dbConn();
         updateUser(db, id, userData, (error, result) => {
-            db.end();
-
             if (error) {
                 if (error.code === 'ER_DUP_ENTRY') {
                     const errorMap = {};
@@ -135,7 +127,6 @@ module.exports = {
         const { id } = req.params;
         const db = dbConn();
         deleteUser(db, id, (error, result) => {
-            db.end();
             if (error) {
                 console.error("Erro no CONTROLLER ao DELETAR usuário:", error);
                 return res.status(500).render('error');

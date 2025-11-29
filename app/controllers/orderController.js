@@ -12,8 +12,6 @@ module.exports = {
         const db = dbConn();
 
         getOrdersByUserId(db, userId, status, (error, result) => {
-            db.end();
-
             if(error) {
                 console.error("Erro no CONTROLLER ao LISTAR PEDIDOS:", error);
                 return res.status(500).render('error');
@@ -30,8 +28,6 @@ module.exports = {
         const db = dbConn();
 
         getOrderById(db, id, userId, (error, result) => {
-            db.end();
-
             if(error) {
                 console.error("Erro no CONTROLLER ao LISTAR PEDIDO por ID:", error);
                 res.status(500).render('error');
@@ -50,8 +46,6 @@ module.exports = {
         const db = dbConn();
 
         getAllOrders(db, status, (error, orders) => {
-            db.end();
-
             if (error) {
                 console.error("Erro no CONTROLLER (admin) ao listar pedidos:", error);
                 return res.status(500).render('error');
@@ -66,7 +60,6 @@ module.exports = {
     const db = dbConn();
 
     getAdminOrderById(db, id, (error, orderData) => {
-        db.end();
         if (error) {
             console.error("Erro no CONTROLLER (admin) ao buscar pedido por ID:", error);
             return res.redirect('/admin/orders'); 
@@ -90,8 +83,6 @@ module.exports = {
         const db = dbConn();
 
         alterOrderStatus(db, id, statusPedido, (error, result) => {
-            db.end();
-            
             if (error) {
                 console.error("Erro ao atualizar status:", error);
                 return res.redirect('/admin/orders'); 
