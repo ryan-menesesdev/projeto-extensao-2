@@ -1,12 +1,11 @@
 module.exports = {
     getAllUsers: (db, tipo, callback) => {
-        let sql = "SELECT id, cpf, nome, tipo, telefone, email FROM usuario WHERE tipo != 'cliente'";
+        let sql = "SELECT id, cpf, nome, tipo, telefone, email FROM usuario WHERE tipo = 'funcionario'";
 
         const params = [];
 
         if (tipo) {
             sql += " AND tipo = ?";
-
             params.push(tipo);
         }
 
@@ -15,11 +14,12 @@ module.exports = {
 
     getUserById: (db, id, callback) => {
         const sql =
-            "SELECT id, cpf, nome, tipo, telefone, email FROM usuario WHERE id = ?";
+            "SELECT id, cpf, nome, tipo, telefone, email FROM usuario WHERE id = ? AND tipo != 'supervisor'";
         const params = [id];
 
         db.query(sql, params, callback);
     },
+
     findByEmail: (db, email, callback) => {
         const sql = "SELECT * FROM usuario WHERE email = ? LIMIT 1";
         db.query(sql, [email], (err, results) => {
@@ -27,19 +27,20 @@ module.exports = {
             return callback(null, results[0]);
         });
     },
+
     addUser: (db, userData, callback) => {
         const sql = "INSERT INTO usuario SET ?";
         db.query(sql, userData, callback);
     },
 
     updateUser: (db, id, userData, callback) => {
-        const sql = "UPDATE usuario SET ? WHERE id = ?";
+        const sql = "UPDATE usuario SET ? WHERE id = ? AND tipo != 'supervisor'";
         const params = [userData, id];
         db.query(sql, params, callback);
     },
 
     deleteUser: (db, id, callback) => {
-        const sql = "DELETE FROM usuario WHERE id = ?";
+        const sql = "DELETE FROM usuario WHERE id = ? AND tipo != 'supervisor'";
         const params = [id];
         db.query(sql, params, callback);
     },
