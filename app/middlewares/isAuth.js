@@ -35,7 +35,6 @@ const isAuth = (req, res, next) => {
 
         const db = dbConn();
         UsersModel.getUserById(db, decoded.id, (dbErr, result) => {
-            db.end();
 
             if (dbErr) {
                 console.log('[isAuth] Erro DB:', dbErr);

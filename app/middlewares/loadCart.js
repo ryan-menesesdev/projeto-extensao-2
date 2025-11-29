@@ -11,7 +11,6 @@ const loadCart = (req, res, next) => {
 
     const db = dbConn();
     getCartItemsByUserId(db, user.id, (error, result) => {
-        db.end();
         
         if (error) {
             console.error("Erro silencioso ao carregar carrinho no header:", error);

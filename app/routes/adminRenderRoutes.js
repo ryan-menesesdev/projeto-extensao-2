@@ -28,7 +28,6 @@ adminRenderRouter.get('/admin/products/edit/:id', isAuth, permitSuper, (req, res
     const db = dbConn();
 
     getProductById(db, id, (error, result) => {
-        db.end();
 
         if (error || !result.length) {
             return res.redirect('/admin/products');
@@ -47,7 +46,6 @@ adminRenderRouter.get('/admin/users/edit/:id', isAuth, permitSuper, (req, res) =
     const db = dbConn();
 
     getUserById(db, id, (error, result) => {
-        db.end();
 
         if (error || !result.length) {
             return res.redirect('/admin/users');

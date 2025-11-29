@@ -101,7 +101,6 @@ module.exports = {
 
         const db = dbConn();
         updateProductById(db, id, productData, (error, result) => {
-            db.end();
             if (error) {
                 console.error("Erro no CONTROLLER ao atualizar produto:", error);
                 return res.status(500).render('error');
