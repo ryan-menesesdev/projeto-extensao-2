@@ -32,6 +32,33 @@ body {
     font-weight: bold; 
 }
 
+.filter-group {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-filter {
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    color: #b71c1c;
+    background-color: white;
+    border: 1px solid #b71c1c;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.btn-filter:hover {
+    background-color: #ffebee;
+}
+
+.btn-filter.active {
+    background-color: #b71c1c;
+    color: white;
+}
+
+
 .btn-new { 
     background-color: #b71c1c; 
     color: white; 
