@@ -55,7 +55,7 @@ module.exports = {
                 if (error) {
                     if (error.code === 'ER_DUP_ENTRY') {
                         const errorMap = {};
-                        const msg = "";
+                        const msg = error.sqlMessage || error.message || "";;
 
                         if (msg.includes('email')) {
                             errorMap.email = 'Este e-mail já está cadastrado no sistema.';
@@ -106,7 +106,7 @@ module.exports = {
             if (error) {
                 if (error.code === 'ER_DUP_ENTRY') {
                     const errorMap = {};
-                    const msg = "";
+                    const msg = error.sqlMessage || error.message || "";
 
                     if (msg.includes('email')) {
                         errorMap.email = 'Este e-mail já está cadastrado no sistema.';

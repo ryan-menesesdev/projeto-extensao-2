@@ -2,6 +2,7 @@ const dbConn = require("../../config/dbConnection");
 const { getAdminOrderById, alterOrderStatus } = require("../models/orderModel");
 const { getAllOrders } = require("../models/orderModel");
 const { getOrdersByUserId, getOrderById } = require("../models/orderModel");
+const sendEmail = require("../services/emailService");
 
 module.exports = {
     listOrders: (req, res) => {
@@ -82,14 +83,28 @@ module.exports = {
 
         const db = dbConn();
 
-        alterOrderStatus(db, id, statusPedido, (error, result) => {
-            if (error) {
-                console.error("Erro ao atualizar status:", error);
-                return res.redirect('/admin/orders'); 
+        getAdminOrderById(db, id, (error, orderData) => {
+            if (error || !orderData) {
+                console.error("Erro ao buscar dados para envio de email:", error);
             }
 
-            console.log(`[Order] Pedido #${id} atualizado para: ${statusPedido}`);
-            res.redirect('/admin/orders');
+            const clientEmail = orderData?.details?.emailCliente;
+            const clientName = orderData?.details?.nomeCliente;
+
+            alterOrderStatus(db, id, statusPedido, async (updateError, result) => {
+                if (updateError) {
+                    console.error("Erro ao atualizar status:", updateError);
+                    return res.redirect('/admin/orders');
+                }
+
+                console.log(`[Order] Pedido #${id} atualizado para: ${statusPedido}`);
+
+                if (clientEmail) {
+                    await sendEmail(clientEmail, clientName, statusPedido, id);
+                }
+
+                res.redirect('/admin/orders');
+            });
         });
     }
 }

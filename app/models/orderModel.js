@@ -149,5 +149,9 @@ module.exports = {
         const params = [status, id];
         
         db.query(sql, params, callback);
+    },
+    getOrderOwnerEmail: (db, orderId, callback) => {
+        const sql = 'SELECT u.email, u.nome FROM pedido p JOIN usuario u ON p.idUsuario = u.id WHERE p.id = ?';
+        db.query(sql, [orderId], callback);
     }
 };
