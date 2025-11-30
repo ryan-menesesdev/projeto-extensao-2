@@ -7,61 +7,61 @@ require('dotenv').config();
 
 module.exports = {
     authUser: async (req, res) => {
-    console.log('[Authenticate User Controller]');
-    const { email, senha } = req.body;
+        console.log('[Authenticate User Controller]');
+        const { email, senha } = req.body;
 
-    const db = dbConn();
-    UsersModel.findByEmail(db, email, async (err, result) => {        
-        if (err) {
-            console.error('[Auth User DB Error]', err);
+        const db = dbConn();
+        UsersModel.findByEmail(db, email, async (err, result) => {        
+            if (err) {
+                console.error('[Auth User DB Error]', err);
 
-            return res.status(500).render('login', {
-                errors: { email: 'Erro interno. Tente novamente mais tarde.' },
-                formData: req.body
-            });
-        }
+                return res.status(500).render('login', {
+                    errors: { email: 'Erro interno. Tente novamente mais tarde.' },
+                    formData: req.body
+                });
+            }
 
-        const invalidCredentialsError = () => {
-            return res.status(401).render('login', {
-                errors: { senha: 'E-mail ou senha incorretos.' }, 
-                formData: req.body
-            });
-        };
+            const invalidCredentialsError = () => {
+                return res.status(401).render('login', {
+                    errors: { senha: 'E-mail ou senha incorretos.' }, 
+                    formData: req.body
+                });
+            };
 
-        if (!result) {
-            return invalidCredentialsError();
-        }
-
-        try {
-            const match = await bcrypt.compare(senha, result.senha);
-
-            if (!match) {
+            if (!result) {
                 return invalidCredentialsError();
             }
 
-            const payload = { id: result.id, email: result.email, tipo: result.tipo };
-            const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+            try {
+                const match = await bcrypt.compare(senha, result.senha);
 
-            res.cookie('authToken', token, { 
-                httpOnly: true, 
-                maxAge: 3600000 
-            });
+                if (!match) {
+                    return invalidCredentialsError();
+                }
 
-            if(result.tipo === 'funcionario' || result.tipo === 'supervisor') {
-                return res.redirect('/admin/home');
+                const payload = { id: result.id, nome: result.nome, email: result.email, tipo: result.tipo };
+                const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+                res.cookie('authToken', token, { 
+                    httpOnly: true, 
+                    maxAge: 3600000 
+                });
+
+                if(result.tipo === 'funcionario' || result.tipo === 'supervisor') {
+                    return res.redirect('/admin/home');
+                }
+
+                return res.redirect('/');
+                
+            } catch (e) {
+                console.error('[Auth Error]', e);
+                return res.status(500).render('login', {
+                    errors: { email: 'Erro ao processar autenticação.' },
+                    formData: req.body
+                });
             }
-
-            return res.redirect('/');
-            
-        } catch (e) {
-            console.error('[Auth Error]', e);
-            return res.status(500).render('login', {
-                errors: { email: 'Erro ao processar autenticação.' },
-                formData: req.body
-            });
-        }
-    });
-},
+        });
+    },
     logout: (req, res) => {
         console.log('[Logout User Controller]');
 
