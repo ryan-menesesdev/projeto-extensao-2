@@ -129,7 +129,6 @@
                         <select name="tipo" class="form-control <%= err.tipo ? 'input-error' : '' %>">
                             <option value="" disabled <%= !data.tipo ? 'selected' : '' %>>Selecione</option>
                             <option value="funcionario" <%= data.tipo === 'funcionario' ? 'selected' : '' %>>Funcionário</option>
-                            <option value="supervisor" <%= data.tipo === 'supervisor' ? 'selected' : '' %>>Supervisor</option>
                         </select>
                         <% if (err.tipo) { %>
                             <span class="error-message"><i class="fas fa-exclamation-circle"></i> <%= err.tipo %></span>

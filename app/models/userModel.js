@@ -14,7 +14,7 @@ module.exports = {
 
     getUserById: (db, id, callback) => {
         const sql =
-            "SELECT id, cpf, nome, tipo, telefone, email FROM usuario WHERE id = ? AND tipo != 'supervisor'";
+            "SELECT id, cpf, nome, tipo, telefone, email FROM usuario WHERE id = ? AND tipo != 'supervisor' AND tipo != 'cliente'";
         const params = [id];
 
         db.query(sql, params, callback);
@@ -34,13 +34,13 @@ module.exports = {
     },
 
     updateUser: (db, id, userData, callback) => {
-        const sql = "UPDATE usuario SET ? WHERE id = ? AND tipo != 'supervisor'";
+        const sql = "UPDATE usuario SET ? WHERE id = ? AND tipo != 'supervisor' AND tipo != 'cliente'";
         const params = [userData, id];
         db.query(sql, params, callback);
     },
 
     deleteUser: (db, id, callback) => {
-        const sql = "DELETE FROM usuario WHERE id = ? AND tipo != 'supervisor'";
+        const sql = "DELETE FROM usuario WHERE id = ? AND tipo != 'supervisor' AND tipo != 'cliente'";
         const params = [id];
         db.query(sql, params, callback);
     },
