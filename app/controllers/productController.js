@@ -3,7 +3,7 @@ const { getProductById } = require('../models/productModel');
 const dbConn = require('../../config/dbConnection');
 
 module.exports = {
-    listProducts: async (req, res) => {
+    listProducts: (req, res) => {
         console.log('CONTROLLER de PRODUTOS');
 
         const { categoria } = req.query;
@@ -21,7 +21,7 @@ module.exports = {
             })
         })
     },
-    getProductById: async (req, res) => {
+    getProductById: (req, res) => {
         const { id } = req.params;
         const db = dbConn();
 
